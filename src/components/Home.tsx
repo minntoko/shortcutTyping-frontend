@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { loginState } from "../state/atoms/userLoginAtom";
 
 const Home = () => {
+  const isLogin = useRecoilValue(loginState);
   return (
     <>
       <header className="flex items-center fixed top-0 w-full h-16">
-        <button className="text-white ml-auto mr-5">サインイン</button>
-        <button className="text-white mr-10">サインアップ</button>
+        {isLogin ? <button className="text-white ml-auto mr-10">ログアウト</button> : <Link to="/login" className="text-white ml-auto mr-10">ログイン</Link>}
       </header>
       <main className="flex justify-around items-center w-[100vw] h-[100vh] bg-slate-900">
         <div className="flex flex-col justify-between items-center bg-slate-800 w-[300px] h-[70vh] rounded-md">
