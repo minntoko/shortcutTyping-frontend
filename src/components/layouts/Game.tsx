@@ -1,22 +1,87 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const Game = () => {
+  type request = {
+  "course": string,
+  "questions": Array<{
+    "id": string,
+    "question": string,
+    "keys": Array<{
+      "key": string,
+      "placeholder": boolean,
+    }>
+  }>
+};
 
-  const [time, setTime] = useState<number>(10);
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (time <= 0) {
-        console.log("clear");
-        clearInterval(timer);
-      }else{
-        setTime((time) => time - 1);
-        console.log(time);
+  // ダミーデータ
+  const data: request = {
+    "course": "Mac",
+    "questions": [
+      {
+        "id": "1",
+        "question": "文字をコピーするショートカット",
+        "keys": [
+          {
+            "key": "command",
+            "placeholder": true,
+          },
+          {
+            "key": "c",
+            "placeholder": false,
+          }
+        ]
+      },
+       {
+        "id": "2",
+
+        "question": "コピーした文字をペーストするショートカット",
+        "keys": [
+          {
+            "key": "command",
+            "placeholder": true
+          },
+          {
+            "key": "v",
+            "placeholder": false
+          }
+        ]
+      },
+    ]
+  };
+    
+ const [time, setTime] = useState<number>(10);
+  const [answerKey, setAnswerKey] = useState<number>(0);
+
+  // キーイベントのコールバック関数
+  const escFunction = useCallback(
+    (event: { key: string }) => {
+      // キーコードを判定
+      if (event.key === data["questions"][answerKey]["keys"][1]["key"]) {
+        console.log(answerKey + " Key is pressed!");
+        setTime(10); // タイマーをリセット
+        setAnswerKey(answerKey+1); // answerKeyを変更
       }
+    },
+    [answerKey]
+  );
+
+  useEffect(() => {
+
+    // キーイベントを追加
+    document.addEventListener("keydown", escFunction, true);
+
+    // 10秒カウントダウン
+    const timer = setInterval(() => {
+      setTime((prevTime) => (prevTime <= 0 ? 0 : prevTime - 1));
     }, 1000);
+
     return () => {
+      document.removeEventListener("keydown", escFunction, true);
       clearInterval(timer);
     };
-  });
+  }, [escFunction, time]);
+
+
   return <div className="h-screen w-screen flex justify-center items-center">
     {/* <div className="text-5xl">
       count down
@@ -32,7 +97,7 @@ const Game = () => {
       </div>
       <div className="bg-blue-400 p-4">
         <div className="p-4 w-full text-center">
-          文字をコピーするショートカット
+          {data["questions"][answerKey]["question"]}
           </div>
         <div className="p-4 w-full text-center flex justify-around">
           <div className="p-4 bg-slate-50 inline">
@@ -42,7 +107,7 @@ const Game = () => {
             ＋
           </div>
           <div className="p-4 bg-slate-50 inline">
-            c
+            {data["questions"][answerKey]["keys"][1]["key"]}
           </div>
           </div>
       </div>
