@@ -54,9 +54,9 @@ const Home = () => {
             )}
           </div>
           {isLogin && (
-            <button className="bg-slate-700 text-white w-[90%] h-12 p-3 my-3 rounded-md">
+            <Link to={"/learnList"} className="bg-slate-700 text-white w-[90%] h-12 p-3 my-3 rounded-md">
               覚えてないショートカット一覧へ
-            </button>
+            </Link>
           )}
         </div>
         <div className="flex flex-col justify-between h-[70vh]">
