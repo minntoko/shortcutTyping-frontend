@@ -110,22 +110,6 @@ const Game = () => {
     };
   }, [,answerKey]);
 
-
-
-  // useEffect(() => {
-  //   // アニメーション
-  //   // const animation = anime({
-  //   //   targets: ".timeBar",
-  //   //   width: "100%",
-  //   //   easing: 'linear',
-  //   //   duration: 10000,
-  //   // });
-  //   // // animation.play();
-  //   // animation.restart();
-  //   animation();
-  // }, [answerKey]);
-
-
   return <div className="h-screen w-screen flex justify-center items-center">
     {/* <div className="text-5xl">
       count down
