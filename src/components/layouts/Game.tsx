@@ -110,40 +110,45 @@ const Game = () => {
     };
   }, [,answerKey]);
 
-  return <div className="h-screen w-screen flex justify-center items-center">
-    {/* <div className="text-5xl">
-      count down
-    </div> */}
-    <div className="bg-gray-300 p-10 w-2/4">
-      <div className="flex justify-around p-4">
-        <div className="p-2 bg-blue-400 w-16">
-          {time}秒
-          </div>
-          <div className="w-1/2">
+  return <main className="flex justify-around items-center w-[100vw] h-[100vh] bg-slate-900">
 
-            <div className="bg-slate-100 h-8 w-0 timeBar">
-              
+    
+    <div className="h-screen w-screen flex justify-center items-center">
+      {/* <div className="text-5xl">
+        count down
+      </div> */}
+      <div className=" bg-slate-800 p-10 w-2/4 rounded-md">
+        <div className="flex justify-around p-4">
+          <div className="text-white text-xl p-1 bg-slate-600 w-16 text-center">
+            {time}秒
+          </div>
+            <div className="w-1/2 h-8 bg-slate-600">
+
+              <div className="bg-slate-100 h-8 w-0 timeBar">
+                
+              </div>
             </div>
-          </div>
-      </div>
-      <div className="bg-blue-400 p-4">
-        <div className="p-4 w-full text-center">
-          {data["questions"][answerKey]["question"]}
-          </div>
-        <div className="p-4 w-full text-center flex justify-around">
-          <div className="p-4 bg-slate-50 inline">
-            command
-          </div>
-          <div className="p-4 inline">
-            ＋
-          </div>
-          <div className="p-4 bg-slate-50 inline">
-            {data["questions"][answerKey]["keys"][1]["key"]}
-          </div>
-          </div>
+        </div>
+        <div className="bg-slate-600 p-4 rounded-md">
+          <div className="text-white text-xl p-4 w-full text-center ">
+            {data["questions"][answerKey]["question"]}
+            </div>
+          <div className="p-4 w-full text-center flex justify-around">
+            <div className="p-4 bg-slate-50 inline  rounded-md text-xl">
+              command
+            </div>
+            <div className="text-white text-xl p-4 inline rounded-md">
+              ＋
+            </div>
+            <div className="p-4 bg-slate-50 inline rounded-md text-xl">
+              {data["questions"][answerKey]["keys"][1]["key"]}
+            </div>
+            </div>
+        </div>
       </div>
     </div>
-  </div>;
+  </main>
+
 };
 
 export default Game;
