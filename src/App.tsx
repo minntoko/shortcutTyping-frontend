@@ -1,6 +1,6 @@
 import { Routes, Route, Link } from "react-router-dom";
 import Home from "./components/layouts/Home";
-import Game from "./components/layouts/Game";
+import Game from "./components/Game";
 import Finish from "./components/layouts/Finish";
 
 const App = () => {
