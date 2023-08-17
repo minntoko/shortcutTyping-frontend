@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import anime from "animejs";
+import { Link } from "react-router-dom";
 
 const Game = () => {
 
@@ -110,7 +111,13 @@ const Game = () => {
     };
   }, [,answerKey]);
 
-  return <main className="flex justify-around items-center w-[100vw] h-[100vh] bg-slate-900">
+  return<>
+   <header className="fixed top-0 flex justify-between items-center w-[100vw] h-[10vh] p-4">
+        <Link to="/">
+          <h1 className="text-xl font-bold text-white">ショートカットタイピング</h1>
+        </Link>
+      </header>
+  <main className="flex justify-around items-center w-[100vw] h-[100vh] bg-slate-900">
 
     
     <div className="h-screen w-screen flex justify-center items-center">
@@ -148,6 +155,8 @@ const Game = () => {
       </div>
     </div>
   </main>
+  </>
+
 
 };
 
