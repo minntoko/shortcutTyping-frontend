@@ -1,8 +1,24 @@
 import { Link } from "react-router-dom";
+import BGDots from "./layouts/BGDots";
+import { useEffect } from "react";
 
 const Finish = () => {
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch('https://shortcutgame.kumaa9.dev/api/shortcut/');
+      const jsonData = await response.json();
+      console.log(jsonData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
   return (
     <>
+      <BGDots />
       <header className="fixed top-0 flex justify-between items-center w-[100vw] h-[10vh] p-4">
         <Link to="/">
           <h1 className="text-xl font-bold text-white">
@@ -10,7 +26,7 @@ const Finish = () => {
           </h1>
         </Link>
       </header>
-      <main className="flex justify-evenly items-center w-[100vw] h-[100vh] bg-slate-900">
+      <main className="flex justify-evenly items-center w-[100vw] h-[100vh]">
         <div className="flex flex-col w-[280px] max-h-[455px] h-[60%] bg-slate-800 rounded-md overflow-hidden">
           <div className="bg-blue-500 w-full py-4 text-center text-xl">
             <h1 className="text-white">リンク</h1>

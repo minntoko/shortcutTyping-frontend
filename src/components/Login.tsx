@@ -2,6 +2,7 @@ import { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSetRecoilState } from 'recoil';
 import { loginState } from '../state/atoms/userLoginAtom';
+import BGDots from './layouts/BGDots';
 
 const Login = () => {
   const setIsLgoin = useSetRecoilState(loginState);
@@ -13,12 +14,13 @@ const Login = () => {
   }
   return (
     <>
+      <BGDots />
       <header className="fixed top-0 flex justify-between items-center w-[100vw] h-[10vh] p-4">
         <Link to="/">
           <h1 className="text-xl font-bold text-white">ショートカットタイピング</h1>
         </Link>
       </header>
-      <main className="flex justify-around items-center w-[100vw] h-[100vh] bg-slate-900">
+      <main className="flex justify-around items-center w-[100vw] h-[100vh]">
         <div className="flex flex-col justify-center h-[70vh]">
           <div className="flex flex-col items-center justify-evenly w-[600px] h-96 bg-slate-800 rounded-md">
             <p className="text-white text-sm text-start">登録したメールアドレスとパスワードを入力してください</p>

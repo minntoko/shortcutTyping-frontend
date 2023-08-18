@@ -1,14 +1,16 @@
 import { Link } from "react-router-dom"
+import BGDots from "./layouts/BGDots"
 
 const LearnList = () => {
   return (
     <>
+      <BGDots />
       <header className="fixed top-0 flex justify-between items-center w-[100vw] h-[10vh] p-4">
         <Link to="/">
           <h1 className="text-xl font-bold text-white">ショートカットタイピング</h1>
         </Link>
       </header>
-      <main className="flex flex-col justify-center items-center w-[100vw] h-[100vh] bg-slate-900">
+      <main className="flex flex-col justify-center items-center w-[100vw] h-[100vh]">
         <h2 className="text-2xl font-bold text-white mb-10">覚えてないショートカットのリスト</h2>
         <div className="flex justify-evenly items-center w-full">
           <div className="flex flex-col w-[26%] h-[70vh] bg-slate-800 rounded-md">
