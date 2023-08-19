@@ -1,12 +1,12 @@
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { loginState } from "../state/atoms/userLoginAtom";
+import { loginState, loginToken } from "../state/atoms/userLoginAtom";
 import BGDots from "./layouts/BGDots";
 
 const Signup = () => {
   const setIsLgoin = useSetRecoilState(loginState);
-  const [_token, setToken] = useRecoilState(loginState);
+  const [_token, setToken] = useRecoilState(loginToken);
   const [emailValue, setEmailValue] = useState("");
   const [passValue, setPassValue] = useState("");
   const [passCheckValue, setPassCheckValue] = useState("");
@@ -30,7 +30,6 @@ const Signup = () => {
       // ステータスコードが200の時に成功のメッセージを表示
       if (result.status === 200) {
         const data = await result.json();
-        console.log(data);
         setToken(data.token);
         setIsLgoin(true);
         navigate("/");
@@ -62,7 +61,6 @@ const Signup = () => {
       // ステータスコードが201の時に成功のメッセージを表示
       if (result.status === 201) {
         const data = await result.json();
-        console.log(data);
         window.alert("登録に成功しました");
         longinFunc();
       }

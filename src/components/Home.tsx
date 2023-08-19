@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { loginState } from "../state/atoms/userLoginAtom";
+import { loginState, loginToken } from "../state/atoms/userLoginAtom";
 import BGDots from "./layouts/BGDots";
 import LinesFrame from "./layouts/LinesFrame";
 import CornersFrame from "./layouts/CornersFrame";
@@ -12,6 +12,7 @@ import KranoxButton from "./buttons/KranoxButton";
 
 const Home = () => {
   const [isLogin, setIsLogin] = useRecoilState(loginState);
+  const [token, setToken] = useRecoilState(loginToken);
   const progress = 70;
   const circumference = 2 * Math.PI * 70;
   const offset = circumference - (progress / 100) * circumference;
@@ -19,6 +20,10 @@ const Home = () => {
   const [hoveredWindows, setHoveredWindows] = useState(false);
   const [hoveredLinux, setHoveredLinux] = useState(false);
   const [hoveredKey, setHoveredKey] = useState(false);
+  const logoutFunc = () => {
+    setIsLogin(false);
+    setToken("");
+  };
   return (
     <>
       <BGDots />
@@ -26,7 +31,7 @@ const Home = () => {
         {isLogin ? (
           <button
             className="text-white ml-auto mr-10"
-            onClick={() => setIsLogin(false)}
+            onClick={() => logoutFunc()}
           >
             ログアウト
           </button>
