@@ -36,7 +36,7 @@ const KranoxButton = ({wid = "300px", hei = "150px"}: FrameProps): ReactElement 
           padding={4}
           strokeWidth={1}
           squareSize={6}
-          smallLineLength={12}
+          smallLineLength={18}
           largeLineLength={24}
         />
       </div>
