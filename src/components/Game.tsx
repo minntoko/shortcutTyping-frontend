@@ -27,7 +27,7 @@ const Game = () => {
   const [answerKey, setAnswerKey] = useState<number>(-1);
 
   const data = useRef<request[]>()
-
+  const typoCount = useRef<number>(0);
 
 
   useEffect(()=>{
@@ -51,6 +51,10 @@ const Game = () => {
         setTime(10); // タイマーをリセット
         ani.restart();
         setAnswerKey(answerKey+1); // answerKeyを変更
+      }else{
+        if(answerKey == -1) return
+        typoCount.current += 1
+        console.log(typoCount.current)
       }
     },
     [answerKey]
