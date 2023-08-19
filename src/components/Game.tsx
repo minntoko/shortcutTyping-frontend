@@ -7,30 +7,19 @@ const Game = () => {
   type request = {
         "shortcut_id": number,
         "shortcut_name": string,
-        "os": [
-            {
-                "os_name": string
-            }
-        ],
-        "key1": [
-            {
+        "f_os":string,
+        "f_key1": {
+                "key": string,
+                "placeholder": Boolean
+            },
+        "f_key2":{
+                "key": string,
+                "placeholder": Boolean
+            },
+        "f_key3":{
                 "key": string,
                 "placeholder": Boolean
             }
-        ],
-        "key2": [
-            {
-                "key": string,
-                "placeholder": Boolean
-            }
-        ],
-        "key3": [
-            {
-                "key": string,
-                "placeholder": Boolean
-            }
-        ],
-    
 };
 
  const [time, setTime] = useState<number>(15);
@@ -57,7 +46,7 @@ const Game = () => {
   const escFunction = useCallback(
     (event: { key: string }) => {
       // キーコードを判定
-      if (event.key.toLocaleLowerCase() === data.current?.[answerKey]?.key2?.[0]?.key.toLocaleLowerCase()) {
+      if (event.key.toLocaleLowerCase() === data.current?.[answerKey]?.f_key2?.key.toLocaleLowerCase()) {
         console.log(answerKey + " Key is pressed!");
         setTime(10); // タイマーをリセット
         ani.restart();
@@ -132,14 +121,14 @@ const Game = () => {
             </div>
           <div className="p-4 w-full text-center flex justify-around">
             <div className="p-4 bg-slate-50 inline  rounded-md text-xl">
-                 {answerKey == -1 ? "":data.current?.[answerKey]?.key1?.[0]?.key}
+                 {answerKey == -1 ? "":data.current?.[answerKey]?.f_key1?.key}
             </div>
             <div className="text-white text-xl p-4 inline rounded-md">
               ＋
             </div>
             <div className="p-4 bg-slate-50 inline rounded-md text-xl">
-              <p className={data.current?.[answerKey]?.key2?.[0]?.placeholder? "":"opacity-0"}>
-                {answerKey == -1 ? "":data.current?.[answerKey]?.key2?.[0]?.key}
+              <p className={data.current?.[answerKey]?.f_key2?.placeholder? "":"opacity-0"}>
+                {answerKey == -1 ? "":data.current?.[answerKey]?.f_key2?.key}
               </p>
             </div>
             </div>
