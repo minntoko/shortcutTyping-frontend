@@ -1,7 +1,9 @@
 import { Routes, Route, Link } from "react-router-dom";
-import Home from "./components/layouts/Home";
+
+import Home from "./components/Home";
 import Game from "./components/Game";
-import Finish from "./components/layouts/Finish";
+import Finish from "./components/Finish";
+
 
 const App = () => {
   return (
