@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import anime from "animejs";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 
 const Game = () => {
-
+  //データ型
   type request = {
         "shortcut_id": number,
         "shortcut_name": string,
@@ -29,6 +29,7 @@ const Game = () => {
   const data = useRef<request[]>()
   const typoCount = useRef<number>(0);
 
+  const navigate  = useNavigate();
 
   useEffect(()=>{
 
@@ -51,6 +52,9 @@ const Game = () => {
         setTime(10); // タイマーをリセット
         ani.restart();
         setAnswerKey(answerKey+1); // answerKeyを変更
+        if(answerKey == data.current?.length-1){
+          navigate(`/finish`)
+        }
       }else{
         if(answerKey == -1) return
         typoCount.current += 1
@@ -73,6 +77,7 @@ const Game = () => {
       if (countDown === -1) {
         clearInterval(countDownInterval)
         setAnswerKey(0)
+        ani.play()
       }
       if (countDown > -2) {
         setCountDown(countDown - 1)
