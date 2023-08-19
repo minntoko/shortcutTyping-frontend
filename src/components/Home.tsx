@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { loginState, loginToken } from "../state/atoms/userLoginAtom";
+import { loginState, loginToken, userIdState } from "../state/atoms/userLoginAtom";
 import BGDots from "./layouts/BGDots";
 import LinesFrame from "./layouts/LinesFrame";
 import CornersFrame from "./layouts/CornersFrame";
@@ -9,6 +9,12 @@ import { useEffect, useState } from "react";
 import CornersButton from "./buttons/CornersButton";
 import UnderlineButton from "./buttons/UnderlineButton";
 import KranoxButton from "./buttons/KranoxButton";
+import jwt_decode from "jwt-decode";
+
+interface Jwt {
+  random_string: string;
+  userid: string;
+}
 
 interface Arrival {
   arrival: {
@@ -49,7 +55,7 @@ const defaultArrival = {
 const Home = () => {
   const [isLogin, setIsLogin] = useRecoilState(loginState);
   const [token, setToken] = useRecoilState(loginToken);
-  // const [shortcutsData, setShortcutsData] = useState<Shortcut[]>([]);
+  const [userId, setUserId] = useRecoilState(userIdState);
   const [macShortcuts, setMacShortcuts] = useState([]);
   const [windowsShortcuts, setWindowsShortcuts] = useState([]);
   const [linuxShortcuts, setLinuxShortcuts] = useState([]);
@@ -61,12 +67,20 @@ const Home = () => {
   const [hoveredWindows, setHoveredWindows] = useState(false);
   const [hoveredLinux, setHoveredLinux] = useState(false);
   const [hoveredKey, setHoveredKey] = useState(false);
+
   const logoutFunc = () => {
     setIsLogin(false);
     setToken("");
   };
 
-  const userId = 1;
+  try {
+    const decoded: Jwt = jwt_decode(token);
+    console.log(decoded);
+    setUserId(decoded.userid);
+    console.log(userId);
+  } catch (error) {
+    console.log("トークンがありません。");
+  }
 
   const fetchRemember = async () => {
     try {
