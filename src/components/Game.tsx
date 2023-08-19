@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import anime from "animejs";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import BGDots from "./layouts/BGDots";
 import CornersFrame from "./layouts/CornersFrame";
 import OctagonFrame from "./layouts/OctagonFrame";
@@ -36,6 +36,9 @@ const Game = () => {
   const correctCount = useRef<number[]>([]);
   const missCount = useRef<number[]>([]);
 
+  const location = useLocation();
+  const course = location.state as { course: string };
+
   const navigate = useNavigate();
 
   // データの取得
@@ -65,7 +68,12 @@ const Game = () => {
           console.log(correctCount.current);
           console.log(missCount.current);
           navigate(`/finish`, {
-            state: { correct: correctCount.current, miss: missCount.current },
+            state: {
+              solved: correctCount, //正解した問題のid:正数配列
+              notSolved: missCount, //正解できなかった問題のid:正数配列
+              typoCount: typoCount, //タイプミスのカウント:正数
+              os: course, //osの種類:文字列
+            },
           });
         }
       } else {
@@ -121,7 +129,14 @@ const Game = () => {
       if (answerKey == data.current!.length - 1) {
         console.log(correctCount.current);
         console.log(missCount.current);
-        navigate(`/finish`);
+        navigate(`/finish`, {
+          state: {
+            solved: correctCount, //正解した問題のid:正数配列
+            notSolved: missCount, //正解できなかった問題のid:正数配列
+            typoCount: typoCount, //タイプミスのカウント:正数
+            os: course, //osの種類:文字列
+          },
+        });
       }
     }
   }, [answerKey, time]);
