@@ -1,81 +1,63 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import anime from "animejs";
 import { Link } from "react-router-dom";
 
 const Game = () => {
 
   type request = {
-  "course": string,
-  "questions": Array<{
-    "id": string,
-    "question": string,
-    "keys": Array<{
-      "key": string,
-      "placeholder": boolean,
-    }>
-  }>
+        "shortcut_id": number,
+        "shortcut_name": string,
+        "os": [
+            {
+                "os_name": string
+            }
+        ],
+        "key1": [
+            {
+                "key": string,
+                "placeholder": Boolean
+            }
+        ],
+        "key2": [
+            {
+                "key": string,
+                "placeholder": Boolean
+            }
+        ],
+        "key3": [
+            {
+                "key": string,
+                "placeholder": Boolean
+            }
+        ],
+    
 };
 
-  // ダミーデータ
-  const data: request = {
-    "course": "Mac",
-    "questions": [
-      {
-        "id": "1",
-        "question": "文字をコピーするショートカット",
-        "keys": [
-          {
-            "key": "command",
-            "placeholder": true,
-          },
-          {
-            "key": "c",
-            "placeholder": false,
-          }
-        ]
-      },
-       {
-        "id": "2",
-
-        "question": "コピーした文字をペーストするショートカット",
-        "keys": [
-          {
-            "key": "command",
-            "placeholder": true
-          },
-          {
-            "key": "v",
-            "placeholder": false
-          }
-        ]
-      },
-        {
-        "id": "3",
-
-        "question": "b",
-        "keys": [
-          {
-            "key": "command",
-            "placeholder": true
-          },
-          {
-            "key": "b",
-            "placeholder": false
-          }
-        ]
-      },
-    ]
-  };
-    
  const [time, setTime] = useState<number>(15);
  const [countDown,setCountDown] = useState<number>(3);
   const [answerKey, setAnswerKey] = useState<number>(-1);
+
+  const data = useRef<request[]>()
+
+
+
+  useEffect(()=>{
+
+    const result= fetch("https://shortcutgame.kumaa9.dev/api/shortcut/")
+    .then((res)=> res.json())
+    .then((json)=> {
+      data.current = json
+      console.log(data)
+    })
+    .catch(err=> console.log(err))
+  },[])
+
 
   // キーイベントのコールバック関数
   const escFunction = useCallback(
     (event: { key: string }) => {
       // キーコードを判定
-      if (event.key === data["questions"][answerKey]["keys"][1]["key"]) {
+      if (event.key.toLocaleLowerCase() === data.current?.[answerKey]?.key2?.[0]?.key.toLocaleLowerCase()) {
         console.log(answerKey + " Key is pressed!");
         setTime(10); // タイマーをリセット
         ani.restart();
@@ -94,7 +76,6 @@ const Game = () => {
     ani.pause();
 
     useEffect(()=>{
-      // setAnswerKey(0)
       const countDownInterval = setInterval(() => {
       if (countDown === -1) {
         clearInterval(countDownInterval)
@@ -147,17 +128,19 @@ const Game = () => {
         </div>
         <div className="bg-slate-600 p-4 rounded-md">
           <div className="text-white text-xl p-4 w-full text-center ">
-            {answerKey == -1  ? "":data["questions"][answerKey]["question"]}
+            {answerKey == -1  ? "": data.current?.[answerKey]?.shortcut_name}
             </div>
           <div className="p-4 w-full text-center flex justify-around">
             <div className="p-4 bg-slate-50 inline  rounded-md text-xl">
-              command
+                 {answerKey == -1 ? "":data.current?.[answerKey]?.key1?.[0]?.key}
             </div>
             <div className="text-white text-xl p-4 inline rounded-md">
               ＋
             </div>
             <div className="p-4 bg-slate-50 inline rounded-md text-xl">
-              {answerKey == -1 ? "":data["questions"][answerKey]["keys"][1]["key"]}
+              <p className={data.current?.[answerKey]?.key2?.[0]?.placeholder? "":"opacity-0"}>
+                {answerKey == -1 ? "":data.current?.[answerKey]?.key2?.[0]?.key}
+              </p>
             </div>
             </div>
         </div>
