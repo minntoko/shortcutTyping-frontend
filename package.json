@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@arwes/react": "^1.0.0-alpha.23",
+    "@emotion/react": "^11.11.1",
     "animejs": "^3.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
