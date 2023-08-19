@@ -28,6 +28,8 @@ const Game = () => {
 
   const data = useRef<request[]>()
   const typoCount = useRef<number>(0);
+  const correctCount = useRef<number[]>([]);
+  const missCount = useRef<number[]>([]);
 
   const navigate  = useNavigate();
 
@@ -49,10 +51,13 @@ const Game = () => {
       // キーコードを判定
       if (event.key.toLocaleLowerCase() === data.current?.[answerKey]?.f_key2?.key.toLocaleLowerCase()) {
         console.log(answerKey + " Key is pressed!");
+        correctCount.current.push(data.current?.[answerKey]?.shortcut_id)//正解したショートカットのIDを配列に追加
         setTime(10); // タイマーをリセット
         setAnswerKey(answerKey+1); // answerKeyを変更
         if(answerKey == data.current?.length-1){
-          navigate(`/finish`)
+          console.log(correctCount.current)
+          console.log(missCount.current)
+          navigate(`/finish`,{state:{correct:correctCount.current,miss:missCount.current}})
         }
       }else{
         if(answerKey == -1) return
@@ -102,9 +107,12 @@ const Game = () => {
 
   useEffect(()=>{
     if(time == 0){
+      missCount.current.push(data.current?.[answerKey]?.shortcut_id??-1)
       setTime(10)
       setAnswerKey(answerKey+1)
        if(answerKey == (data.current!.length) -1){
+          console.log(correctCount.current)
+          console.log(missCount.current)
           navigate(`/finish`)
         }
     }
