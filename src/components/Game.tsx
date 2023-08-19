@@ -67,8 +67,9 @@ const Game = () => {
     ]
   };
     
- const [time, setTime] = useState<number>(10);
-  const [answerKey, setAnswerKey] = useState<number>(0);
+ const [time, setTime] = useState<number>(15);
+ const [countDown,setCountDown] = useState<number>(3);
+  const [answerKey, setAnswerKey] = useState<number>(-1);
 
   // キーイベントのコールバック関数
   const escFunction = useCallback(
@@ -92,6 +93,23 @@ const Game = () => {
     });
     ani.pause();
 
+    useEffect(()=>{
+      // setAnswerKey(0)
+      const countDownInterval = setInterval(() => {
+      if (countDown === -1) {
+        clearInterval(countDownInterval)
+        setAnswerKey(0)
+      }
+      if (countDown > -2) {
+        setCountDown(countDown - 1)
+      }
+    }, 1000)
+    return () => {
+      clearInterval(countDownInterval)
+    }
+  }, [countDown])
+  
+
   useEffect(() => {
     // キーイベントを追加
     document.addEventListener("keydown", escFunction, true);
@@ -102,28 +120,19 @@ const Game = () => {
     }, 1000);
 
     ani.play();
-
-
     return () => {
       document.removeEventListener("keydown", escFunction, true);
       ani.restart()
       clearInterval(timer);
     };
-  }, [,answerKey]);
+  }, [answerKey]);
 
-  return<>
-   <header className="fixed top-0 flex justify-between items-center w-[100vw] h-[10vh] p-4">
-        <Link to="/">
-          <h1 className="text-xl font-bold text-white">ショートカットタイピング</h1>
-        </Link>
-      </header>
-  <main className="flex justify-around items-center w-[100vw] h-[100vh] bg-slate-900">
+  const countDownTag = 
+      <div className="text-5xl text-white">
+        {(countDown == -1) ? "GO" :countDown}
+      </div>
 
-    
-    <div className="h-screen w-screen flex justify-center items-center">
-      {/* <div className="text-5xl">
-        count down
-      </div> */}
+  const mainGameTag = 
       <div className=" bg-slate-800 p-10 w-2/4 rounded-md">
         <div className="flex justify-around p-4">
           <div className="text-white text-xl p-1 bg-slate-600 w-16 text-center">
@@ -138,7 +147,7 @@ const Game = () => {
         </div>
         <div className="bg-slate-600 p-4 rounded-md">
           <div className="text-white text-xl p-4 w-full text-center ">
-            {data["questions"][answerKey]["question"]}
+            {answerKey == -1  ? "":data["questions"][answerKey]["question"]}
             </div>
           <div className="p-4 w-full text-center flex justify-around">
             <div className="p-4 bg-slate-50 inline  rounded-md text-xl">
@@ -148,11 +157,24 @@ const Game = () => {
               ＋
             </div>
             <div className="p-4 bg-slate-50 inline rounded-md text-xl">
-              {data["questions"][answerKey]["keys"][1]["key"]}
+              {answerKey == -1 ? "":data["questions"][answerKey]["keys"][1]["key"]}
             </div>
             </div>
         </div>
       </div>
+
+  return<>
+   <header className="fixed top-0 flex justify-between items-center w-[100vw] h-[10vh] p-4">
+        <Link to="/">
+          <h1 className="text-xl font-bold text-white">ショートカットタイピング</h1>
+        </Link>
+      </header>
+  <main className="flex justify-around items-center w-[100vw] h-[100vh] bg-slate-900">
+
+    
+    <div className="h-screen w-screen flex justify-center items-center">
+      {answerKey== -1 ? countDownTag:mainGameTag}
+      
     </div>
   </main>
   </>
