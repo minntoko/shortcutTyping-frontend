@@ -22,8 +22,8 @@ const Game = () => {
             }
 };
 
- const [time, setTime] = useState<number>(15);
- const [countDown,setCountDown] = useState<number>(3);
+  const [time, setTime] = useState<number>(15);
+  const [countDown,setCountDown] = useState<number>(3);
   const [answerKey, setAnswerKey] = useState<number>(-1);
 
   const data = useRef<request[]>()
@@ -31,8 +31,8 @@ const Game = () => {
 
   const navigate  = useNavigate();
 
+  // データの取得
   useEffect(()=>{
-
     const result= fetch("https://shortcutgame.kumaa9.dev/api/shortcut/")
     .then((res)=> res.json())
     .then((json)=> {
@@ -50,7 +50,6 @@ const Game = () => {
       if (event.key.toLocaleLowerCase() === data.current?.[answerKey]?.f_key2?.key.toLocaleLowerCase()) {
         console.log(answerKey + " Key is pressed!");
         setTime(10); // タイマーをリセット
-        ani.restart();
         setAnswerKey(answerKey+1); // answerKeyを変更
         if(answerKey == data.current?.length-1){
           navigate(`/finish`)
@@ -63,21 +62,11 @@ const Game = () => {
     },
     [answerKey]
   );
-
-   const ani =anime({
-      targets: ".timeBar",
-      width: "100%",
-      easing: 'linear',
-      duration: 10000,
-    });
-    ani.pause();
-
     useEffect(()=>{
       const countDownInterval = setInterval(() => {
       if (countDown === -1) {
         clearInterval(countDownInterval)
         setAnswerKey(0)
-        ani.play()
       }
       if (countDown > -2) {
         setCountDown(countDown - 1)
@@ -98,7 +87,12 @@ const Game = () => {
       setTime((prevTime) => (prevTime <= 0 ? 0 : prevTime - 1));
     }, 1000);
 
-    ani.play();
+    const ani =anime({
+      targets: ".timeBar",
+      width: "100%",
+      easing: 'linear',
+      duration: 10000,
+    }); 
     return () => {
       document.removeEventListener("keydown", escFunction, true);
       ani.restart()
