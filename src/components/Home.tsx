@@ -203,23 +203,23 @@ const Home = () => {
                   </div>
                   <div className="relative px-[15px] mb-[18px]">
                     <UnderlineButton wid="270px" hei="70px" />
-                    <div className="absolute top-0 flex justify-between w-[90%] mx-auto px-4 py-[23px]">
+                    <div className="absolute top-0 flex justify-between items-center w-[90%] mx-auto px-4 py-[23px]">
                       <p className="text-white">Mac編</p>
-                      <p className="text-white">80%</p>
+                      <p className="text-white text-2xl">80%</p>
                     </div>
                   </div>
                   <div className="relative px-[15px] mb-[18px]">
                     <UnderlineButton wid="270px" hei="70px" />
-                    <div className="absolute top-0 flex justify-between w-[90%] mx-auto px-4 py-[23px]">
+                    <div className="absolute top-0 flex justify-between items-center w-[90%] mx-auto px-4 py-[23px]">
                       <p className="text-white">Windows編</p>
-                      <p className="text-white">70%</p>
+                      <p className="text-white text-2xl">70%</p>
                     </div>
                   </div>
                   <div className="relative px-[15px] mb-[30px]">
                     <UnderlineButton wid="270px" hei="70px" />
-                    <div className="absolute top-0 flex justify-between w-[90%] mx-auto px-4 py-[23px]">
+                    <div className="absolute top-0 flex justify-between items-center w-[90%] mx-auto px-4 py-[23px]">
                       <p className="text-white">Linux編</p>
-                      <p className="text-white">60%</p>
+                      <p className="text-white text-2xl">60%</p>
                     </div>
                   </div>
                 </>

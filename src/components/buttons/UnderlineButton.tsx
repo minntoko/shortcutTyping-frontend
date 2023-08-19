@@ -23,7 +23,7 @@ const UnderlineButton = ({wid = "300px", hei = "150px"}: FrameProps): ReactEleme
     }
     [data-name="line"] {
       color: hsl(0, 0%, 100%);
-      filter: drop-shadow(0 0 4px hsl(180, 75%, 50%));
+      filter: drop-shadow(0 0 4px hsl(0, 75%, 50%));
     }
   `;
 
