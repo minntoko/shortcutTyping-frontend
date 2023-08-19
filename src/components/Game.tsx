@@ -106,6 +106,16 @@ const Game = () => {
     };
   }, [answerKey]);
 
+  useEffect(()=>{
+    if(time == 0){
+      setTime(10)
+      setAnswerKey(answerKey+1)
+       if(answerKey == (data.current!.length) -1){
+          navigate(`/finish`)
+        }
+    }
+  },[answerKey,time])
+
   const countDownTag = 
       <div className="text-5xl text-white">
         {(countDown == -1) ? "GO" :countDown}
