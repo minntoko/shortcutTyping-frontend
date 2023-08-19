@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import anime from "animejs";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import BGDots from "./layouts/BGDots";
 import CornersFrame from "./layouts/CornersFrame";
 import OctagonFrame from "./layouts/OctagonFrame";
 import UnderlineButton from "./buttons/UnderlineButton";
 import KranoxButton from "./buttons/KranoxButton";
+import { loginState, loginToken } from "../state/atoms/userLoginAtom";
+import { useRecoilState } from "recoil";
 
 const Game = () => {
   //データ型
@@ -36,17 +38,31 @@ const Game = () => {
   const correctCount = useRef<number[]>([]);
   const missCount = useRef<number[]>([]);
 
+  const location = useLocation();
+  // const course = location.state.course as number;
+
   const navigate = useNavigate();
+
+  const isLogin = useRecoilState(loginState);
+  const token = useRecoilState(loginToken);
 
   // データの取得
   useEffect(() => {
-    const result = fetch("https://shortcutgame.kumaa9.dev/api/shortcut/")
-      .then((res) => res.json())
-      .then((json) => {
-        data.current = json;
-        console.log(data);
-      })
-      .catch((err) => console.log(err));
+    if (isLogin[0] == false) {
+      const result = fetch(`https://shortcutgame.kumaa9.dev/api/shortcut/${1}/`)
+        .then((res) => res.json())
+        .then((json) => {
+          data.current = json;
+          console.log(data);
+        });
+    } else {
+      const result = fetch(`https://shortcutgame.kumaa9.dev/api/shortcut/${1}/`)
+        .then((res) => res.json())
+        .then((json) => {
+          data.current = json;
+          console.log(data);
+        });
+    }
   }, []);
 
   // キーイベントのコールバック関数
@@ -65,7 +81,12 @@ const Game = () => {
           console.log(correctCount.current);
           console.log(missCount.current);
           navigate(`/finish`, {
-            state: { correct: correctCount.current, miss: missCount.current },
+            state: {
+              solved: correctCount, //正解した問題のid:正数配列
+              notSolved: missCount, //正解できなかった問題のid:正数配列
+              typoCount: typoCount, //タイプミスのカウント:正数
+              // os: course, //osの種類:文字列
+            },
           });
         }
       } else {
@@ -121,7 +142,14 @@ const Game = () => {
       if (answerKey == data.current!.length - 1) {
         console.log(correctCount.current);
         console.log(missCount.current);
-        navigate(`/finish`);
+        navigate(`/finish`, {
+          state: {
+            solved: correctCount, //正解した問題のid:正数配列
+            notSolved: missCount, //正解できなかった問題のid:正数配列
+            typoCount: typoCount, //タイプミスのカウント:正数
+            // os: course, //osの種類:文字列
+          },
+        });
       }
     }
   }, [answerKey, time]);
