@@ -7,65 +7,31 @@ import CornersFrame from "./layouts/CornersFrame";
 import LinesFrame from "./layouts/LinesFrame";
 import KranoxButton from "./buttons/KranoxButton";
 import OctagonFrame from "./layouts/OctagonFrame";
-import { userIdState } from "../state/atoms/userLoginAtom";
-import { useRecoilState } from "recoil";
 
 interface State {
-  soluve: number[];
-  notSolved: number[];
-  typoCount: number;
-  os: string;
+  state: {
+    soluve: number[];
+    notSolved: number[];
+    typoCount: number;
+    os: string;
+  };
 }
 
 // ゲームから取得できるデータ
+const states = {
+  soluve: [1, 2, 3],
+  notSolved: [4, 5, 6],
+  typoCount: 2,
+  os: "Windows",
+};
 const Finish = () => {
-  const [userId, _setUserId] = useRecoilState(userIdState);
-  const successFunc = async () => {
-    try {
-      const result = await fetch(
-        "https://shortcutgame.kumaa9.dev/api/success/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            f_user: userId,
-            f_os: os,
-            shortcuts: soluve,
-          }),
-        }
-      );
-      // ステータスコードが201の時に成功のメッセージを表示
-      if (result.status === 201) {
-        const data = await result.json();
-        console.log("正解問題送信成功");
-      }
-      // ステータスコード400の時に失敗のメッセージを表示
-      if (result.status === 400) {
-        window.alert("通信に失敗しました");
-      }
-    } catch (error) {
-      window.alert("通信に失敗しました");
-    }
-  };
-
-  useEffect(() => {
-    successFunc();
-  }, []);
-
   const [shortcutsData, setShortcutsData] = useState([]) as any[];
-  const [states, setStates] = useState<State>({
-    soluve: [1, 2, 3],
-    notSolved: [4, 5, 6],
-    typoCount: 2,
-    os: "Windows",
-  });
   const location = useLocation();
   try {
-    const state = location.state as State;
-    setStates(state);
-    // ↑エラー出るかも
+    const { state } = location.state as State;
+    console.log(state);
+
+    // const { _soluve, notSolved, typoCount, os } = state;
   } catch (error) {
     console.log("ゲームから来てください");
   }
@@ -158,16 +124,13 @@ const Finish = () => {
                   <p className="mb-3 text-lg font-bold text-center text-white">
                     入力ミス：{typoCount}
                   </p>
-                  <p className="text-lg font-bold text-center text-white">
-                    正当数：{soluve.length}
-                  </p>
+                  <p className="text-lg font-bold text-center text-white">正当数：{soluve.length}</p>
                 </div>
                 <div className="mt-8 flex justify-evenly w-full">
                   <div className="relative">
                     <OctagonFrame hovered={false} wid="120px" hei="40px" />
                     <Link
                       to="/game"
-                      state={{ cource: os }}
                       className="absolute top-0 flex justify-center items-center w-[120px] h-[40px] font-bold rounded-full text-white"
                     >
                       もう一度
