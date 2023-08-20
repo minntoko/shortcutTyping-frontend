@@ -40,9 +40,10 @@ const Finish = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`https://shortcutgame.kumaa9.dev/api/shortcut/${os}/`);
+      const response = await fetch(`https://shortcutgame.kumaa9.dev/api/shortcutdetail/${notSolved.join("/")}/`);
       const jsonData = await response.json();
       setShortcutsData(jsonData);
+      console.log(jsonData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -98,7 +99,7 @@ const Finish = () => {
               <KranoxButton wid="370px" hei="220px" />
               <div className="absolute top-0 flex flex-col justify-center items-center w-[370px] h-[220px] p-5 mb-4 rounded-sm">
                 <div>
-                  <p className="mb-3 text-lg font-bold text-white">入力ミス：20</p>
+                  <p className="mb-3 text-lg font-bold text-white">入力ミス：{typoCount}</p>
                   <p className="text-lg font-bold text-white">達成度：2% UP</p>
                 </div>
                 <div className="mt-10 flex justify-evenly w-full">
@@ -126,7 +127,7 @@ const Finish = () => {
               <h1 className="text-white">達成度 77%</h1>
             </div>
             <div>
-              <h2 className="text-white mt-14 p-5">覚えてないショートカット 5 / 10</h2>
+              <h2 className="text-white mt-14 p-5">覚えてないショートカット {notSolved.length} / 10</h2>
             </div>
             <div className="w-[90%] rounded-md mb-5 grow overflow-scroll scrollContainer">
               {shortcutsData.map((shortcut: any, index: number) => {
