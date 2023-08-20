@@ -131,6 +131,7 @@ const Finish = () => {
                     <OctagonFrame hovered={false} wid="120px" hei="40px" />
                     <Link
                       to="/game"
+                      state={{ cource: os }}
                       className="absolute top-0 flex justify-center items-center w-[120px] h-[40px] font-bold rounded-full text-white"
                     >
                       もう一度
