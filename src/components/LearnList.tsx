@@ -115,7 +115,7 @@ const LearnList = () => {
                   </div>
                 </div>
               </div>
-              <div className="overflow-scroll rounded-md w-[90%] mx-auto">
+              <div className="overflow-scroll rounded-md w-[90%] mx-auto scrollContainer">
                 {macShortcuts.map((shortcut: any, index: number) => {
                   return (
                     <div key={index} className="relative mb-4">
@@ -155,7 +155,7 @@ const LearnList = () => {
                     </div>
                   );
                 })}
-              {windowsShortcuts.length === 0 && <p className="text-white text-center">覚えてないショートカットはありません</p>}
+              {windowsShortcuts.length === 0 && <p className="text-white text-center mt-[50%]">覚えてないショートカットはありません</p>}
               </div>
             </div>
           </div>

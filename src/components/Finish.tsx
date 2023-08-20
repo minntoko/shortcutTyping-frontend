@@ -14,7 +14,7 @@ interface State {
     notSolved: number[];
     typoCount: number;
     os: string;
-  }
+  };
 }
 
 // ゲームから取得できるデータ
@@ -22,32 +22,37 @@ const states = {
   soluve: [1, 2, 3],
   notSolved: [4, 5, 6],
   typoCount: 2,
-  os: "Windows"
-}
+  os: "Windows",
+};
 const Finish = () => {
   const [shortcutsData, setShortcutsData] = useState([]) as any[];
   const location = useLocation();
   try {
     const { state } = location.state as State;
     console.log(state);
-  
+
     // const { _soluve, notSolved, typoCount, os } = state;
   } catch (error) {
     console.log("ゲームから来てください");
   }
 
-  const {soluve, notSolved, typoCount, os} = states;
+  const { soluve, notSolved, typoCount, os } = states;
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`https://shortcutgame.kumaa9.dev/api/shortcut/${os}/`);
+      const response = await fetch(
+        `https://shortcutgame.kumaa9.dev/api/shortcutdetail/${notSolved.join(
+          "/"
+        )}/`
+      );
       const jsonData = await response.json();
       setShortcutsData(jsonData);
+      console.log(jsonData);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -67,19 +72,37 @@ const Finish = () => {
           <LinesFrame wid="280px" hei="455px" />
           <div className="absolute top-0 flex flex-col w-[280px] h-full rounded-md overflow-hidden">
             <div className="flex flex-col justify-evenly items-center py-4 grow">
-              <Link to="/" className="text-xl text-white hover:bg-slate-400/20 px-6 py-3 my-1 duration-200 rounded-lg">
+              <Link
+                to="/"
+                className="text-xl text-white hover:bg-slate-400/20 px-6 py-3 my-1 duration-200 rounded-lg"
+              >
                 ホーム
               </Link>
-              <Link to="/game" className="text-xl text-white hover:bg-slate-400/20 px-6 py-3 my-1 duration-200 rounded-lg">
+              <Link
+                to="/game"
+                state={{ cource: "Mac" }}
+                className="text-xl text-white hover:bg-slate-400/20 px-6 py-3 my-1 duration-200 rounded-lg"
+              >
                 Mac編
               </Link>
-              <Link to="/game" className="text-xl text-white hover:bg-slate-400/20 px-6 py-3 my-1 duration-200 rounded-lg">
+              <Link
+                to="/game"
+                className="text-xl text-white hover:bg-slate-400/20 px-6 py-3 my-1 duration-200 rounded-lg"
+              >
                 Windows編
               </Link>
-              <Link to="/game" className="text-xl text-white hover:bg-slate-400/20 px-6 py-3 my-1 duration-200 rounded-lg">
+              <Link
+                to="/game"
+                state={{ cource: "Windows" }}
+                className="text-xl text-white hover:bg-slate-400/20 px-6 py-3 my-1 duration-200 rounded-lg"
+              >
                 Linux編
               </Link>
-              <Link to="/learnList" className="text-xl text-white hover:bg-slate-400/20 px-6 py-3 my-1 duration-200 rounded-lg">
+              <Link
+                to="/learnList"
+                state={{ cource: "Linux" }}
+                className="text-xl text-white hover:bg-slate-400/20 px-6 py-3 my-1 duration-200 rounded-lg"
+              >
                 覚えてないリスト
               </Link>
             </div>
@@ -98,19 +121,27 @@ const Finish = () => {
               <KranoxButton wid="370px" hei="220px" />
               <div className="absolute top-0 flex flex-col justify-center items-center w-[370px] h-[220px] p-5 mb-4 rounded-sm">
                 <div>
-                  <p className="mb-3 text-lg font-bold text-white">入力ミス：20</p>
-                  <p className="text-lg font-bold text-white">達成度：2% UP</p>
+                  <p className="mb-3 text-lg font-bold text-center text-white">
+                    入力ミス：{typoCount}
+                  </p>
+                  <p className="text-lg font-bold text-center text-white">正当数：{soluve.length}</p>
                 </div>
-                <div className="mt-10 flex justify-evenly w-full">
+                <div className="mt-8 flex justify-evenly w-full">
                   <div className="relative">
                     <OctagonFrame hovered={false} wid="120px" hei="40px" />
-                    <Link to="/game" className="absolute top-0 flex justify-center items-center w-[120px] h-[40px] font-bold rounded-full text-white">
+                    <Link
+                      to="/game"
+                      className="absolute top-0 flex justify-center items-center w-[120px] h-[40px] font-bold rounded-full text-white"
+                    >
                       もう一度
                     </Link>
                   </div>
                   <div className="relative">
                     <OctagonFrame hovered={false} wid="120px" hei="40px" />
-                    <Link to="/" className="absolute top-0 flex justify-center items-center w-[120px] h-[40px] font-bold rounded-full text-white">
+                    <Link
+                      to="/"
+                      className="absolute top-0 flex justify-center items-center w-[120px] h-[40px] font-bold rounded-full text-white"
+                    >
                       コース選択
                     </Link>
                   </div>
@@ -120,13 +151,12 @@ const Finish = () => {
           </div>
         </div>
         <div className="relative">
-          <LinesFrame wid="300px" hei="75vh" />
+          <LinesFrame wid="300px" hei="70vh" />
           <div className="absolute top-0 flex flex-col items-center justify-between w-[300px] h-full rounded-md overflow-hidden">
-            <div className="w-full py-4 text-center text-xl absolute top-3">
-              <h1 className="text-white">達成度 77%</h1>
-            </div>
             <div>
-              <h2 className="text-white mt-14 p-5">覚えてないショートカット 5 / 10</h2>
+              <h2 className="text-white p-5">
+                覚えてないショートカット {notSolved.length} / 10
+              </h2>
             </div>
             <div className="w-[90%] rounded-md mb-5 grow overflow-scroll scrollContainer">
               {shortcutsData.map((shortcut: any, index: number) => {
@@ -137,12 +167,16 @@ const Finish = () => {
                       <p>{shortcut.shortcut_name}</p>
                       <p>
                         <span>{shortcut.f_key1.key}</span>
-                        {shortcut.f_key2 && <span> + {shortcut.f_key2.key}</span>}
-                        {shortcut.f_key3 && <span> + {shortcut.f_key3.key}</span>}
+                        {shortcut.f_key2 && (
+                          <span> + {shortcut.f_key2.key}</span>
+                        )}
+                        {shortcut.f_key3 && (
+                          <span> + {shortcut.f_key3.key}</span>
+                        )}
                       </p>
                     </div>
                   </div>
-                )
+                );
               })}
               {/* <div className="p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
                 <p>ペーストするショートカット</p>
