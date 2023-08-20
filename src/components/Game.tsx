@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import anime from "animejs";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import BGDots from "./layouts/BGDots";
 import CornersFrame from "./layouts/CornersFrame";
 import OctagonFrame from "./layouts/OctagonFrame";
@@ -38,8 +38,8 @@ const Game = () => {
   const correctCount = useRef<number[]>([]);
   const missCount = useRef<number[]>([]);
 
-  // const location = useLocation();
-  // const course = location.state.course as number;
+  const location = useLocation();
+  const course = location.state.cource as number;
 
   const navigate = useNavigate();
 
@@ -49,14 +49,14 @@ const Game = () => {
   // データの取得
   useEffect(() => {
     if (isLogin[0] == false) {
-      fetch(`https://shortcutgame.kumaa9.dev/api/shortcut/${1}/`)
+      fetch(`https://shortcutgame.kumaa9.dev/api/shortcut/${course}/`)
         .then((res) => res.json())
         .then((json) => {
           data.current = json;
           console.log(data);
         });
     } else {
-      fetch(`https://shortcutgame.kumaa9.dev/api/shortcut/${1}/`)
+      fetch(`https://shortcutgame.kumaa9.dev/api/shortcut/${course}/`)
         .then((res) => res.json())
         .then((json) => {
           data.current = json;
@@ -69,6 +69,7 @@ const Game = () => {
   const escFunction = useCallback(
     (event: { key: string }) => {
       // キーコードを判定
+      if (time == 1) return;
       if (
         event.key.toLocaleLowerCase() ===
         data.current?.[answerKey]?.f_key2?.key.toLocaleLowerCase()
@@ -85,7 +86,7 @@ const Game = () => {
               solved: correctCount, //正解した問題のid:正数配列
               notSolved: missCount, //正解できなかった問題のid:正数配列
               typoCount: typoCount, //タイプミスのカウント:正数
-              // os: course, //osの種類:文字列
+              os: course, //osの種類:文字列
             },
           });
         }
@@ -168,7 +169,7 @@ const Game = () => {
             solved: correctCount, //正解した問題のid:正数配列
             notSolved: missCount, //正解できなかった問題のid:正数配列
             typoCount: typoCount, //タイプミスのカウント:正数
-            // os: course, //osの種類:文字列
+            os: course, //osの種類:文字列
           },
         });
       }
@@ -193,6 +194,9 @@ const Game = () => {
               {time}秒
             </p>
           </div>
+          <p className=" flex justify-center items-center w-[96px] h-[42px] rounded-md text-white text-xl">
+            {answerKey == -1 ? "" : data.current?.[answerKey]?.f_os}
+          </p>
           <div className="w-1/2 h-[40px] bg-slate-600">
             <div className="bg-[#00DAD9] w-0 h-full timeBar"></div>
           </div>
@@ -227,7 +231,8 @@ const Game = () => {
                     className={
                       data.current?.[answerKey]?.f_key2?.placeholder
                         ? ""
-                        : "opacity-0"
+                        : "opacity-0" +
+                          (time == 1 ? "opacity-100 text-white" : "")
                     }
                   >
                     {answerKey == -1
