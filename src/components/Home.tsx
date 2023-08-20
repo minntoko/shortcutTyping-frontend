@@ -283,7 +283,7 @@ const Home = () => {
             <div className="overflow-scroll w-full">
               {isLogin ? (
                 <>
-                  <div className="relative px-[15px] mb-2">
+                  <div className="relative px-[15px] mb-2 scrollContainer">
                     <CornersButton wid="270px" hei="174px" />
                     <div className="w-[90%] h-[174px] mx-auto rounded-md overflow-hidden scrollContainer p-1 absolute top-0">
                       <svg className="w-full h-full fill-transparent rotate-[-90deg]">
