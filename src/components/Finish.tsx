@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import CornersFrame from "./layouts/CornersFrame";
 import LinesFrame from "./layouts/LinesFrame";
 import KranoxButton from "./buttons/KranoxButton";
+import OctagonFrame from "./layouts/OctagonFrame";
 
 interface State {
   state: {
@@ -93,18 +94,27 @@ const Finish = () => {
                 <h1 className="text-white text-2xl">結果発表</h1>
               </div>
             </div>
-            <div className="bg-slate-200 p-10 mb-4 rounded-sm">
-              <div>
-                <p className="mb-3 text-lg font-bold">入力ミス：20</p>
-                <p className="text-lg font-bold">達成度：2% UP</p>
-              </div>
-              <div className="mt-10">
-                <Link to="/game" className="bg-blue-500 font-bold px-4 py-2 mx-4 rounded-full text-white">
-                  もう一度
-                </Link>
-                <Link to="/" className="bg-red-500 font-bold px-4 py-2 mx-4 rounded-full text-white">
-                  コース選択
-                </Link>
+            <div className="relative">
+              <KranoxButton wid="370px" hei="220px" />
+              <div className="absolute top-0 flex flex-col justify-center items-center w-[370px] h-[220px] p-5 mb-4 rounded-sm">
+                <div>
+                  <p className="mb-3 text-lg font-bold text-white">入力ミス：20</p>
+                  <p className="text-lg font-bold text-white">達成度：2% UP</p>
+                </div>
+                <div className="mt-10 flex justify-evenly w-full">
+                  <div className="relative">
+                    <OctagonFrame hovered={false} wid="120px" hei="40px" />
+                    <Link to="/game" className="absolute top-0 flex justify-center items-center w-[120px] h-[40px] font-bold rounded-full text-white">
+                      もう一度
+                    </Link>
+                  </div>
+                  <div className="relative">
+                    <OctagonFrame hovered={false} wid="120px" hei="40px" />
+                    <Link to="/" className="absolute top-0 flex justify-center items-center w-[120px] h-[40px] font-bold rounded-full text-white">
+                      コース選択
+                    </Link>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
