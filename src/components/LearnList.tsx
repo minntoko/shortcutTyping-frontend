@@ -7,7 +7,44 @@ import KranoxButton from "./buttons/KranoxButton";
 import LinesFrame from "./layouts/LinesFrame";
 import OctagonFrame from "./layouts/OctagonFrame";
 
+interface Arrival {
+  arrival: {
+    Mac: number;
+    Windows: number;
+    Linux: number;
+  };
+  missanswer: {
+    Mac: number;
+    Windows: number;
+    Linux: number;
+  };
+  question: {
+    Mac: number;
+    Windows: number;
+    Linux: number;
+  };
+}
+
+const defaultArrival = {
+  arrival: {
+    Mac: 0,
+    Windows: 0,
+    Linux: 0,
+  },
+  missanswer: {
+    Mac: 0,
+    Windows: 0,
+    Linux: 0,
+  },
+  question: {
+    Mac: 0,
+    Windows: 0,
+    Linux: 0,
+  },
+};
+
 const LearnList = () => {
+  const [arrivalData, setArrivalData] = useState<Arrival>(defaultArrival);
   const [userId, _setUserId] = useRecoilState(userIdState);
   const [macShortcuts, setMacShortcuts] = useState([]);
   const [windowsShortcuts, setWindowsShortcuts] = useState([]);
@@ -34,6 +71,23 @@ const LearnList = () => {
       console.error('Error fetching data:', error);
     }
   };
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `https://shortcutgame.kumaa9.dev/api/arrival/${userId}/`
+      );
+      const jsonData = await response.json();
+      
+      setArrivalData(jsonData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
   
   useEffect(() => {
     fetchRemember();
@@ -57,7 +111,7 @@ const LearnList = () => {
                 <div className="absolute top-0 w-full px-4">
                   <div className="flex justify-between">
                     <p className="text-white p-4">Mac編</p>
-                    <p className="text-white p-4">0 / 33</p>
+                    <p className="text-white p-4">{arrivalData.missanswer.Mac == null ? 0 : arrivalData.missanswer.Mac} / {arrivalData.question.Mac}</p>
                   </div>
                 </div>
               </div>
@@ -85,7 +139,7 @@ const LearnList = () => {
                 <div className="absolute top-0 w-full px-4">
                   <div className="flex justify-between">
                     <p className="text-white p-4">Windows編</p>
-                    <p className="text-white p-4">4 / 34</p>
+                    <p className="text-white p-4">{arrivalData.missanswer.Windows == null ? 0 : arrivalData.missanswer.Windows} / {arrivalData.question.Windows}</p>
                   </div>
                 </div>
               </div>
@@ -113,7 +167,7 @@ const LearnList = () => {
                 <div className="absolute top-0 w-full px-4">
                   <div className="flex justify-between">
                     <p className="text-white p-4">Linux編</p>
-                    <p className="text-white p-4">0 / 43</p>
+                    <p className="text-white p-4">{arrivalData.missanswer.Linux == null ? 0 : arrivalData.missanswer.Linux} / {arrivalData.question.Linux}</p>
                   </div>
                 </div>
               </div>
