@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import anime from "animejs";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BGDots from "./layouts/BGDots";
 import CornersFrame from "./layouts/CornersFrame";
 import OctagonFrame from "./layouts/OctagonFrame";
 import UnderlineButton from "./buttons/UnderlineButton";
 import KranoxButton from "./buttons/KranoxButton";
-import { loginState, loginToken } from "../state/atoms/userLoginAtom";
+import { loginState } from "../state/atoms/userLoginAtom";
 import { useRecoilState } from "recoil";
 
 const Game = () => {
@@ -38,25 +38,25 @@ const Game = () => {
   const correctCount = useRef<number[]>([]);
   const missCount = useRef<number[]>([]);
 
-  const location = useLocation();
+  // const location = useLocation();
   // const course = location.state.course as number;
 
   const navigate = useNavigate();
 
   const isLogin = useRecoilState(loginState);
-  const token = useRecoilState(loginToken);
+  // const token = useRecoilState(loginToken);
 
   // データの取得
   useEffect(() => {
     if (isLogin[0] == false) {
-      const result = fetch(`https://shortcutgame.kumaa9.dev/api/shortcut/${1}/`)
+      fetch(`https://shortcutgame.kumaa9.dev/api/shortcut/${1}/`)
         .then((res) => res.json())
         .then((json) => {
           data.current = json;
           console.log(data);
         });
     } else {
-      const result = fetch(`https://shortcutgame.kumaa9.dev/api/shortcut/${1}/`)
+      fetch(`https://shortcutgame.kumaa9.dev/api/shortcut/${1}/`)
         .then((res) => res.json())
         .then((json) => {
           data.current = json;
@@ -91,6 +91,26 @@ const Game = () => {
         }
       } else {
         if (answerKey == -1) return;
+        var tl = anime.timeline({
+          // easing: "easeInOutQuad",
+        });
+        tl.add({
+          targets: ".typoAnimation",
+          duration: 1,
+          opacity: 0,
+        });
+        tl.add({
+          targets: ".typoAnimation",
+          duration: 120,
+          opacity: 1,
+          easing: "easeInOutQuad",
+        });
+        tl.add({
+          targets: ".typoAnimation",
+          duration: 80,
+          opacity: 0,
+        });
+
         typoCount.current += 1;
         console.log(typoCount.current);
       }
@@ -127,6 +147,7 @@ const Game = () => {
       easing: "linear",
       duration: 10000,
     });
+
     return () => {
       document.removeEventListener("keydown", escFunction, true);
       ani.restart();
@@ -163,8 +184,9 @@ const Game = () => {
   const mainGameTag = (
     <>
       <CornersFrame wid="50vw" hei="40vh" />
-      <div className="absolute p-10 w-2/4 rounded-md">
-        <div className="flex h-[88px] justify-around p-4">
+      <div className="typoAnimation opacity-0 bg-[#ff00003b] h-[40vh] absolute p-10 w-2/4"></div>
+      <div className=" absolute p-10 w-2/4 rounded-md">
+        <div className=" flex h-[88px] justify-around p-4">
           <div className="relative h-[45px]">
             <OctagonFrame wid="96px" hei="40px" hovered={false} />
             <p className="absolute top-0 left-0 flex justify-center items-center w-[96px] h-[42px] rounded-md text-white text-xl">
@@ -237,6 +259,11 @@ const Game = () => {
           {answerKey == -1 ? countDownTag : mainGameTag}
         </div>
       </main>
+      <footer className="flex items-center justify-center fixed bottom-0 w-full h-16">
+        <small className="text-slate-300">
+          &copy; 2023 daipan-shortcut. All Rights Reserved
+        </small>
+      </footer>
     </>
   );
 };
