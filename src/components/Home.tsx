@@ -280,7 +280,7 @@ const Home = () => {
           <LinesFrame wid="300px" hei="70vh" />
           <div className="absolute top-0 left-0 flex flex-col justify-between items-center w-[300px] h-[70vh] rounded-md overflow-hidden">
             <h1 className="text-white text-2xl text-center my-5">達成度</h1>
-            <div className="overflow-scroll w-full">
+            <div className="overflow-scroll scrollContainer w-full">
               {isLogin ? (
                 <>
                   <div className="relative px-[15px] mb-2 scrollContainer">
