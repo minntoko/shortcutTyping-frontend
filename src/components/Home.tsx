@@ -1,29 +1,126 @@
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { loginState, loginToken } from "../state/atoms/userLoginAtom";
+import { loginState, loginToken, userIdState } from "../state/atoms/userLoginAtom";
 import BGDots from "./layouts/BGDots";
 import LinesFrame from "./layouts/LinesFrame";
 import CornersFrame from "./layouts/CornersFrame";
 import OctagonFrame from "./layouts/OctagonFrame";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CornersButton from "./buttons/CornersButton";
 import UnderlineButton from "./buttons/UnderlineButton";
 import KranoxButton from "./buttons/KranoxButton";
 
+interface Arrival {
+  arrival: {
+    Mac: number;
+    Windows: number;
+    Linux: number;
+  };
+  missanswer: {
+    Mac: number;
+    Windows: number;
+    Linux: number;
+  };
+  question: {
+    Mac: number;
+    Windows: number;
+    Linux: number;
+  };
+}
+
+const defaultArrival = {
+  arrival: {
+    Mac: 0,
+    Windows: 0,
+    Linux: 0,
+  },
+  missanswer: {
+    Mac: 0,
+    Windows: 0,
+    Linux: 0,
+  },
+  question: {
+    Mac: 0,
+    Windows: 0,
+    Linux: 0,
+  },
+};
+
 const Home = () => {
   const [isLogin, setIsLogin] = useRecoilState(loginState);
-  const [token, setToken] = useRecoilState(loginToken);
-  const progress = 70;
+  const [_token, setToken] = useRecoilState(loginToken);
+  const [userId, setUserId] = useRecoilState(userIdState);
+  const [macShortcuts, setMacShortcuts] = useState([]);
+  const [windowsShortcuts, setWindowsShortcuts] = useState([]);
+  const [linuxShortcuts, setLinuxShortcuts] = useState([]);
+  const [arrivalData, setArrivalData] = useState<Arrival>(defaultArrival);
+  const [progress, setProgress] = useState(0);
   const circumference = 2 * Math.PI * 70;
   const offset = circumference - (progress / 100) * circumference;
   const [hoveredMac, setHoveredMac] = useState(false);
   const [hoveredWindows, setHoveredWindows] = useState(false);
   const [hoveredLinux, setHoveredLinux] = useState(false);
   const [hoveredKey, setHoveredKey] = useState(false);
+
   const logoutFunc = () => {
     setIsLogin(false);
     setToken("");
+    setUserId("");
   };
+
+  const fetchRemember = async () => {
+    try {
+      const macResponse = await fetch(`https://shortcutgame.kumaa9.dev/api/remember/${userId}/Mac/`);
+      const windowsResponse = await fetch(`https://shortcutgame.kumaa9.dev/api/remember/${userId}/Windows/`);
+      const linuxResponse = await fetch(`https://shortcutgame.kumaa9.dev/api/remember/${userId}/Linux/`);
+      // ステータスコードが200番台のときに配列に追加
+      if (macResponse.status === 200) {
+        const macJsonData = await macResponse.json();
+        setMacShortcuts(macJsonData.shortcuts);
+      }
+      if (windowsResponse.status === 200) {
+        const windowsJsonData = await windowsResponse.json();
+        setWindowsShortcuts(windowsJsonData.shortcuts);
+      }
+      if (linuxResponse.status === 200) {
+        const linuxJsonData = await linuxResponse.json();
+        setLinuxShortcuts(linuxJsonData.shortcuts);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchRemember();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `https://shortcutgame.kumaa9.dev/api/arrival/${userId}/`
+      );
+      const jsonData = await response.json();
+      
+      setArrivalData(jsonData);
+
+      const platforms = Object.keys(jsonData.question);
+      let totalArrival = 0;
+      let length = 0;
+      platforms.forEach((platform) => {
+        if(jsonData.arrival[platform] == null) return;
+        totalArrival += jsonData.arrival[platform];
+        length++;
+      });
+      setProgress(totalArrival / length);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <>
       <BGDots />
@@ -48,37 +145,49 @@ const Home = () => {
             <h2 className="text-white text-xl text-center my-5">
               覚えてないショートカット
             </h2>
-            <div className="w-[90%] h-auto rounded-md overflow-scroll">
+            <div className="w-[90%] h-auto rounded-md overflow-scroll scrollContainer">
               {isLogin ? (
                 <>
-                  <div className="relative mb-4">
-                    <KranoxButton wid="270px" hei="88px" />
-                    <div className="absolute top-0 w-full text-center p-5 rounded-md text-white">
+                  {macShortcuts.map((shortcut: any, index: number) => {
+                    return (
+                      <div key={index} className="relative mb-4">
+                        <KranoxButton wid="270px" hei="112px" />
+                        <div className="absolute flex flex-col justify-center top-0 w-full h-[112px] text-center p-5 rounded-md text-white">
+                          <p>{shortcut.shortcut_name}</p>
+                          <p>Command + C</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {windowsShortcuts.map((shortcut: any, index: number) => {
+                    return (
+                      <div key={index} className="relative mb-4">
+                        <KranoxButton wid="270px" hei="112px" />
+                        <div className="absolute flex flex-col justify-center top-0 w-full h-[112px] text-center p-5 rounded-md text-white">
+                          <p>{shortcut.shortcut_name}</p>
+                          <p>Command + C</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {linuxShortcuts.map((shortcut: any, index: number) => {
+                    return (
+                      <div key={index} className="relative mb-4">
+                        <KranoxButton wid="270px" hei="112px" />
+                        <div className="absolute flex flex-col justify-center top-0 w-full h-[112px] text-center p-5 rounded-md text-white">
+                          <p>{shortcut.shortcut_name}</p>
+                          <p>Command + C</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {/* <div className="relative mb-4">
+                    <KranoxButton wid="270px" hei="112px" />
+                    <div className="absolute flex flex-col justify-center top-0 w-full h-[112px] text-center p-5 rounded-md text-white">
                       <p>コピーするショートカット</p>
                       <p>Command + C</p>
                     </div>
-                  </div>
-                  <div className="relative mb-4">
-                    <KranoxButton wid="270px" hei="88px" />
-                    <div className="absolute top-0 w-full text-center p-5 rounded-md text-white">
-                      <p>ペーストするショートカット</p>
-                      <p>Command + V</p>
-                    </div>
-                  </div>
-                  <div className="relative mb-4">
-                    <KranoxButton wid="270px" hei="88px" />
-                    <div className="absolute top-0 w-full text-center p-5 rounded-md text-white">
-                      <p>カットするショートカット</p>
-                      <p>Command + X</p>
-                    </div>
-                  </div>
-                  <div className="relative mb-4">
-                    <KranoxButton wid="270px" hei="88px" />
-                    <div className="absolute top-0 w-full text-center p-5 rounded-md text-white">
-                      <p>全選択するショートカット</p>
-                      <p>Command + A</p>
-                    </div>
-                  </div>
+                  </div> */}
                 </>
               ) : (
                 <div className="text-white text-center text-xs w-full absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
@@ -124,6 +233,7 @@ const Home = () => {
                   <OctagonFrame wid="300px" hei="48px" hovered={hoveredMac} />
                   <Link
                     to="/game"
+                    state={{ cource: "Mac" }}
                     className="absolute top-0 left-0 flex justify-center items-center w-[300px] h-12 duration-200 text-white rounded-md"
                   >
                     Mac編
@@ -141,6 +251,7 @@ const Home = () => {
                   />
                   <Link
                     to="/game"
+                    state={{ cource: "Windows" }}
                     className="absolute top-0 left-0 flex justify-center items-center w-[300px] h-12 duration-200 text-white rounded-md"
                   >
                     Windows編
@@ -154,6 +265,7 @@ const Home = () => {
                   <OctagonFrame wid="300px" hei="48px" hovered={hoveredLinux} />
                   <Link
                     to="/game"
+                    state={{ cource: "Linux" }}
                     className="absolute top-0 left-0 flex justify-center items-center w-[300px] h-12 duration-200 text-white rounded-md"
                   >
                     Linux編
@@ -166,7 +278,7 @@ const Home = () => {
         </div>
         <div className="relative">
           <LinesFrame wid="300px" hei="70vh" />
-          <div className="absolute top-0 left-0 flex flex-col justify-between items-center w-[300px] h-[70vh] rounded-md">
+          <div className="absolute top-0 left-0 flex flex-col justify-between items-center w-[300px] h-[70vh] rounded-md overflow-hidden">
             <h1 className="text-white text-2xl text-center my-5">達成度</h1>
             <div className="overflow-scroll w-full">
               {isLogin ? (
@@ -201,7 +313,8 @@ const Home = () => {
                       <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center">
                         <p className="text-white">トータル</p>
                         <p className="text-white text-3xl mb-1">
-                          70<span className="text-base ml-1">%</span>
+                          {progress == 100 ? 100 : progress.toFixed(1)}
+                          <span className="text-base ml-1">%</span>
                         </p>
                       </div>
                     </div>
@@ -210,21 +323,21 @@ const Home = () => {
                     <UnderlineButton wid="270px" hei="70px" />
                     <div className="absolute top-0 flex justify-between items-center w-[90%] mx-auto px-4 py-[23px]">
                       <p className="text-white">Mac編</p>
-                      <p className="text-white text-2xl">80%</p>
+                      <p className="text-white text-2xl">{arrivalData.arrival.Mac ? arrivalData.arrival.Mac : "0"}%</p>
                     </div>
                   </div>
                   <div className="relative px-[15px] mb-[18px]">
                     <UnderlineButton wid="270px" hei="70px" />
                     <div className="absolute top-0 flex justify-between items-center w-[90%] mx-auto px-4 py-[23px]">
                       <p className="text-white">Windows編</p>
-                      <p className="text-white text-2xl">70%</p>
+                      <p className="text-white text-2xl">{arrivalData.arrival.Windows ? arrivalData.arrival.Windows : "0"}%</p>
                     </div>
                   </div>
                   <div className="relative px-[15px] mb-[30px]">
                     <UnderlineButton wid="270px" hei="70px" />
                     <div className="absolute top-0 flex justify-between items-center w-[90%] mx-auto px-4 py-[23px]">
                       <p className="text-white">Linux編</p>
-                      <p className="text-white text-2xl">60%</p>
+                      <p className="text-white text-2xl">{arrivalData.arrival.Linux ? arrivalData.arrival.Linux : "0"}%</p>
                     </div>
                   </div>
                 </>

@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { loginState, loginToken } from "../state/atoms/userLoginAtom";
 import BGDots from "./layouts/BGDots";
+import CornersFrame from "./layouts/CornersFrame";
+import OctagonFrame from "./layouts/OctagonFrame";
 
 const Signup = () => {
   const setIsLgoin = useSetRecoilState(loginState);
@@ -101,44 +103,53 @@ const Signup = () => {
       </header>
       <main className="flex justify-around items-center w-[100vw] h-[100vh]">
         <div className="flex flex-col justify-center h-[70vh]">
-          <div className="flex flex-col items-center justify-evenly w-[600px] h-96 bg-slate-800 rounded-md">
-            <p className="text-white text-sm text-start">
-              メールアドレスとパスワードを入力してください
-            </p>
-            <form
-              onSubmit={(e) => handleSubmit(e)}
-              className="flex flex-col justify-center items-start w-[300px]"
-            >
-              <input
-                type="email"
-                className="w-[300px] h-10 mb-4 px-2 outline-none rounded-md"
-                placeholder="メールアドレス"
-                value={emailValue}
-                onChange={(e) => setEmailValue(e.target.value)}
-              />
-              <input
-                type="password"
-                className="w-[300px] h-10 mb-4 px-2 outline-none rounded-md"
-                placeholder="パスワード"
-                value={passValue}
-                onChange={(e) => setPassValue(e.target.value)}
-              />
-              <input
-                type="password"
-                className="w-[300px] h-10 mb-6 px-2 outline-none rounded-md"
-                placeholder="パスワードの確認"
-                value={passCheckValue}
-                onChange={(e) => setPassCheckValue(e.target.value)}
-              />
-              <button className="w-[100px] h-10 px-2 rounded-md bg-blue-500 text-white">
-                新規作成
-              </button>
-            </form>
-            <Link to="/login">
+          <div className="relative">
+            <CornersFrame wid="600px" hei="400px" />
+            <div className="absolute top-0 flex flex-col items-center justify-evenly w-[600px] h-[400px] rounded-md">
+              <div className="relative">
+                <OctagonFrame hovered={false} wid="270px" hei="44px" />
+                <h2 className="absolute flex items-center justify-center top-0 text-2xl text-center text-white w-[270px] h-[44px]">
+                  新規登録
+                </h2>
+              </div>
               <p className="text-white text-sm text-start">
-                既にアカウントをお持ちの方はこちら
+                メールアドレスとパスワードを入力してください
               </p>
-            </Link>
+              <form
+                onSubmit={(e) => handleSubmit(e)}
+                className="flex flex-col justify-center items-start w-[300px]"
+              >
+                <input
+                  type="email"
+                  className="w-[300px] h-10 mb-4 px-2 outline-none rounded-md"
+                  placeholder="メールアドレス"
+                  value={emailValue}
+                  onChange={(e) => setEmailValue(e.target.value)}
+                />
+                <input
+                  type="password"
+                  className="w-[300px] h-10 mb-4 px-2 outline-none rounded-md"
+                  placeholder="パスワード"
+                  value={passValue}
+                  onChange={(e) => setPassValue(e.target.value)}
+                />
+                <input
+                  type="password"
+                  className="w-[300px] h-10 mb-6 px-2 outline-none rounded-md"
+                  placeholder="パスワードの確認"
+                  value={passCheckValue}
+                  onChange={(e) => setPassCheckValue(e.target.value)}
+                />
+                <button className="w-[100px] h-10 px-2 rounded-md bg-blue-500 text-white">
+                  新規作成
+                </button>
+              </form>
+              <Link to="/login">
+                <p className="text-white text-sm text-start">
+                  既にアカウントをお持ちの方はこちら
+                </p>
+              </Link>
+            </div>
           </div>
         </div>
       </main>

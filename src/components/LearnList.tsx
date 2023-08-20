@@ -1,7 +1,97 @@
 import { Link } from "react-router-dom"
 import BGDots from "./layouts/BGDots"
+import { useEffect, useState } from "react";
+import { userIdState } from "../state/atoms/userLoginAtom";
+import { useRecoilState } from "recoil";
+import KranoxButton from "./buttons/KranoxButton";
+import LinesFrame from "./layouts/LinesFrame";
+import OctagonFrame from "./layouts/OctagonFrame";
+
+interface Arrival {
+  arrival: {
+    Mac: number;
+    Windows: number;
+    Linux: number;
+  };
+  missanswer: {
+    Mac: number;
+    Windows: number;
+    Linux: number;
+  };
+  question: {
+    Mac: number;
+    Windows: number;
+    Linux: number;
+  };
+}
+
+const defaultArrival = {
+  arrival: {
+    Mac: 0,
+    Windows: 0,
+    Linux: 0,
+  },
+  missanswer: {
+    Mac: 0,
+    Windows: 0,
+    Linux: 0,
+  },
+  question: {
+    Mac: 0,
+    Windows: 0,
+    Linux: 0,
+  },
+};
 
 const LearnList = () => {
+  const [arrivalData, setArrivalData] = useState<Arrival>(defaultArrival);
+  const [userId, _setUserId] = useRecoilState(userIdState);
+  const [macShortcuts, setMacShortcuts] = useState([]);
+  const [windowsShortcuts, setWindowsShortcuts] = useState([]);
+  const [linuxShortcuts, setLinuxShortcuts] = useState([]);
+  const fetchRemember = async () => {
+    try {
+      const macResponse = await fetch(`https://shortcutgame.kumaa9.dev/api/remember/${userId}/Mac/`);
+      const windowsResponse = await fetch(`https://shortcutgame.kumaa9.dev/api/remember/${userId}/Windows/`);
+      const linuxResponse = await fetch(`https://shortcutgame.kumaa9.dev/api/remember/${userId}/Linux/`);
+      // ステータスコードが200番台のときに配列に追加
+      if (macResponse.status === 200) {
+        const macJsonData = await macResponse.json();
+        setMacShortcuts(macJsonData.shortcuts);
+      }
+      if (windowsResponse.status === 200) {
+        const windowsJsonData = await windowsResponse.json();
+        setWindowsShortcuts(windowsJsonData.shortcuts);
+      }
+      if (linuxResponse.status === 200) {
+        const linuxJsonData = await linuxResponse.json();
+        setLinuxShortcuts(linuxJsonData.shortcuts);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `https://shortcutgame.kumaa9.dev/api/arrival/${userId}/`
+      );
+      const jsonData = await response.json();
+      
+      setArrivalData(jsonData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+  
+  useEffect(() => {
+    fetchRemember();
+  }, []);
   return (
     <>
       <BGDots />
@@ -13,93 +103,87 @@ const LearnList = () => {
       <main className="flex flex-col justify-center items-center w-[100vw] h-[100vh]">
         <h2 className="text-2xl font-bold text-white mb-10">覚えてないショートカットのリスト</h2>
         <div className="flex justify-evenly items-center w-full">
-          <div className="flex flex-col w-[26%] h-[70vh] bg-slate-800 rounded-md">
-            <div className="mb-5 mx-4 bg-slate-700 mt-4">
-              <div className="flex justify-between border-l-8 border-blue-500">
-                <p className="text-white p-4">Mac編</p>
-                <p className="text-white p-4">6 / 30</p>
+          <div className="relative w-[25vw]">
+            <LinesFrame wid="25vw" hei="70vh" />
+            <div className="absolute top-0 flex flex-col w-full h-[70vh] rounded-md z-0">
+              <div className="relative mb-5 mx-4 mt-4">
+                <OctagonFrame wid="100%" hei="56px" hovered={false} />
+                <div className="absolute top-0 w-full px-4">
+                  <div className="flex justify-between">
+                    <p className="text-white p-4">Mac編</p>
+                    <p className="text-white p-4">{arrivalData.missanswer.Mac == null ? 0 : arrivalData.missanswer.Mac} / {arrivalData.question.Mac}</p>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="overflow-scroll rounded-md w-[90%] mx-auto">
-              <div className="w-[100%] p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>コピーするショートカット</p>
-                  <p>Command + C</p>
-              </div>
-              <div className="w-full p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>ペーストするショートカット</p>
-                  <p>Command + V</p>
-              </div>
-              <div className="w-full p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>カットするショートカット</p>
-                  <p>Command + X</p>
-              </div>
-              <div className="w-full p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>全選択するショートカット</p>
-                  <p>Command + A</p>
-              </div>
-              <div className="w-full p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>保存するショートカット</p>
-                  <p>Command + S</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col w-[26%] h-[70vh] bg-slate-800 rounded-md">
-            <div className="mb-5 mx-4 bg-slate-700 mt-4">
-              <div className="flex justify-between border-l-8 border-green-500">
-                <p className="text-white p-4">Windows編</p>
-                <p className="text-white p-4">8 / 27</p>
-              </div>
-            </div>
-            <div className="overflow-scroll rounded-md w-[90%] mx-auto">
-              <div className="w-full p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>コピーするショートカット</p>
-                  <p>Ctrl + C</p>
-              </div>
-              <div className="w-full p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>ペーストするショートカット</p>
-                  <p>Ctrl + V</p>
-              </div>
-              <div className="w-full p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>カットするショートカット</p>
-                  <p>Ctrl + X</p>
-              </div>
-              <div className="w-full p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>全選択するショートカット</p>
-                  <p>Ctrl + A</p>
-              </div>
-              <div className="w-full p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>保存するショートカット</p>
-                  <p>Ctrl + S</p>
+              <div className="overflow-scroll rounded-md w-[90%] mx-auto">
+                {macShortcuts.map((shortcut: any, index: number) => {
+                  return (
+                    <div key={index} className="relative mb-4">
+                      <KranoxButton wid="100%" hei="112px" />
+                      <div className="absolute flex flex-col justify-center top-0 w-full h-[112px] text-center p-5 rounded-md text-white">
+                        <p>{shortcut.shortcut_name}</p>
+                        <p>Command + C</p>
+                      </div>
+                    </div>
+                  );
+                })}
+                {macShortcuts.length === 0 && <p className="text-white text-center mt-[50%]">覚えてないショートカットはありません</p>}
               </div>
             </div>
           </div>
-          <div className="flex flex-col w-[26%] h-[70vh] bg-slate-800 rounded-md">
-            <div className="mb-5 mx-4 bg-slate-700 mt-4">
-              <div className="flex justify-between border-l-8 border-yellow-500">
-                <p className="text-white p-4">Linux編</p>
-                <p className="text-white p-4">18 / 43</p>
+          <div className="relative w-[25vw]">
+            <LinesFrame wid="25vw" hei="70vh" />
+            <div className="absolute top-0 flex flex-col w-full h-[70vh] rounded-md z-0">
+              <div className="relative mb-5 mx-4 mt-4">
+                <OctagonFrame wid="100%" hei="56px" hovered={false} />
+                <div className="absolute top-0 w-full px-4">
+                  <div className="flex justify-between">
+                    <p className="text-white p-4">Windows編</p>
+                    <p className="text-white p-4">{arrivalData.missanswer.Windows == null ? 0 : arrivalData.missanswer.Windows} / {arrivalData.question.Windows}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="overflow-scroll rounded-md w-[90%] mx-auto scrollContainer">
+                {windowsShortcuts.map((shortcut: any, index: number) => {
+                  return (
+                    <div key={index} className="relative mb-4">
+                      <KranoxButton wid="100%" hei="112px" />
+                      <div className="absolute flex flex-col justify-center top-0 w-full h-[112px] text-center p-5 rounded-md text-white">
+                        <p>{shortcut.shortcut_name}</p>
+                        <p>Command + C</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              {windowsShortcuts.length === 0 && <p className="text-white text-center">覚えてないショートカットはありません</p>}
               </div>
             </div>
-            <div className="overflow-scroll rounded-md w-[90%] mx-auto">
-              <div className="w-full p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>コピーするショートカット</p>
-                  <p>Ctrl + C</p>
+          </div>
+          <div className="relative w-[25vw]">
+            <LinesFrame wid="25vw" hei="70vh" />
+            <div className="absolute top-0 flex flex-col w-full h-[70vh] rounded-md z-0">
+              <div className="relative mb-5 mx-4 mt-4">
+                <OctagonFrame wid="100%" hei="56px" hovered={false} />
+                <div className="absolute top-0 w-full px-4">
+                  <div className="flex justify-between">
+                    <p className="text-white p-4">Linux編</p>
+                    <p className="text-white p-4">{arrivalData.missanswer.Linux == null ? 0 : arrivalData.missanswer.Linux} / {arrivalData.question.Linux}</p>
+                  </div>
+                </div>
               </div>
-              <div className="w-full p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>ペーストするショートカット</p>
-                  <p>Ctrl + V</p>
-              </div>
-              <div className="w-full p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>カットするショートカット</p>
-                  <p>Ctrl + X</p>
-              </div>
-              <div className="w-full p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>全選択するショートカット</p>
-                  <p>Ctrl + A</p>
-              </div>
-              <div className="w-full p-5 mb-5 mx-auto bg-slate-600 rounded-md text-white">
-                  <p>保存するショートカット</p>
-                  <p>Ctrl + S</p>
+              <div className="overflow-scroll rounded-md w-[90%] mx-auto scrollContainer">
+                {linuxShortcuts.map((shortcut: any, index: number) => {
+                  return (
+                    <div key={index} className="relative mb-4">
+                      <KranoxButton wid="100%" hei="112px" />
+                      <div className="absolute flex flex-col justify-center top-0 w-full h-[112px] text-center p-5 rounded-md text-white">
+                        <p>{shortcut.shortcut_name}</p>
+                        <p>Command + C</p>
+                      </div>
+                    </div>
+                  );
+                })}
+                {linuxShortcuts.length === 0 && <p className="text-white text-center mt-[50%]">覚えてないショートカットはありません</p>}
               </div>
             </div>
           </div>
