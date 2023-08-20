@@ -9,12 +9,6 @@ import { useEffect, useState } from "react";
 import CornersButton from "./buttons/CornersButton";
 import UnderlineButton from "./buttons/UnderlineButton";
 import KranoxButton from "./buttons/KranoxButton";
-import jwt_decode from "jwt-decode";
-
-interface Jwt {
-  random_string: string;
-  userid: string;
-}
 
 interface Arrival {
   arrival: {
@@ -54,7 +48,7 @@ const defaultArrival = {
 
 const Home = () => {
   const [isLogin, setIsLogin] = useRecoilState(loginState);
-  const [token, setToken] = useRecoilState(loginToken);
+  const [_token, setToken] = useRecoilState(loginToken);
   const [userId, setUserId] = useRecoilState(userIdState);
   const [macShortcuts, setMacShortcuts] = useState([]);
   const [windowsShortcuts, setWindowsShortcuts] = useState([]);
@@ -71,16 +65,8 @@ const Home = () => {
   const logoutFunc = () => {
     setIsLogin(false);
     setToken("");
+    setUserId("");
   };
-
-  try {
-    const decoded: Jwt = jwt_decode(token);
-    console.log(decoded);
-    setUserId(decoded.userid);
-    console.log(userId);
-  } catch (error) {
-    console.log("トークンがありません。");
-  }
 
   const fetchRemember = async () => {
     try {
@@ -119,19 +105,14 @@ const Home = () => {
       setArrivalData(jsonData);
 
       const platforms = Object.keys(jsonData.question);
-      let totalCorrect = 0;
-      let totalQuestions = 0;
-
+      let totalArrival = 0;
+      let length = 0;
       platforms.forEach((platform) => {
-        if(jsonData.missanswer[platform] == null) return;
-        const correct = jsonData.question[platform] - jsonData.missanswer[platform];
-        totalCorrect += correct;
-        totalQuestions += jsonData.question[platform];
+        if(jsonData.arrival[platform] == null) return;
+        totalArrival += jsonData.arrival[platform];
+        length++;
       });
-      if (totalQuestions == 0 || totalQuestions == null) return;
-      
-      const overallRate = (totalCorrect / totalQuestions) * 100;
-      setProgress(overallRate);
+      setProgress(totalArrival / length);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
