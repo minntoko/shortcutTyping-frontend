@@ -122,7 +122,15 @@ const LearnList = () => {
                       <KranoxButton wid="100%" hei="112px" />
                       <div className="absolute flex flex-col justify-center top-0 w-full h-[112px] text-center p-5 rounded-md text-white">
                         <p>{shortcut.shortcut_name}</p>
-                        <p>Command + C</p>
+                        <p>
+                          <span>{shortcut.f_key1.key}</span>
+                          {shortcut.f_key2 && (
+                            <span> + {shortcut.f_key2.key}</span>
+                          )}
+                          {shortcut.f_key3 && (
+                            <span> + {shortcut.f_key3.key}</span>
+                          )}
+                        </p>
                       </div>
                     </div>
                   );
@@ -150,7 +158,15 @@ const LearnList = () => {
                       <KranoxButton wid="100%" hei="112px" />
                       <div className="absolute flex flex-col justify-center top-0 w-full h-[112px] text-center p-5 rounded-md text-white">
                         <p>{shortcut.shortcut_name}</p>
-                        <p>Command + C</p>
+                        <p>
+                          <span>{shortcut.f_key1.key}</span>
+                          {shortcut.f_key2 && (
+                            <span> + {shortcut.f_key2.key}</span>
+                          )}
+                          {shortcut.f_key3 && (
+                            <span> + {shortcut.f_key3.key}</span>
+                          )}
+                        </p>
                       </div>
                     </div>
                   );
@@ -178,7 +194,15 @@ const LearnList = () => {
                       <KranoxButton wid="100%" hei="112px" />
                       <div className="absolute flex flex-col justify-center top-0 w-full h-[112px] text-center p-5 rounded-md text-white">
                         <p>{shortcut.shortcut_name}</p>
-                        <p>Command + C</p>
+                        <p>
+                          <span>{shortcut.f_key1.key}</span>
+                          {shortcut.f_key2 && (
+                            <span> + {shortcut.f_key2.key}</span>
+                          )}
+                          {shortcut.f_key3 && (
+                            <span> + {shortcut.f_key3.key}</span>
+                          )}
+                        </p>
                       </div>
                     </div>
                   );

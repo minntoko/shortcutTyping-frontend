@@ -7,41 +7,37 @@ import CornersFrame from "./layouts/CornersFrame";
 import LinesFrame from "./layouts/LinesFrame";
 import KranoxButton from "./buttons/KranoxButton";
 import OctagonFrame from "./layouts/OctagonFrame";
+import { userIdState } from "../state/atoms/userLoginAtom";
+import { useRecoilState } from "recoil";
 
 interface State {
-  state: {
-    soluve: number[];
-    notSolved: number[];
-    typoCount: number;
-    os: string;
-  };
+  solved: { current: number[] };
+  notSolved: { current: number[] };
+  typoCount: { current: number };
+  os: string;
+}
+
+enum OS {
+  Windows = 1,
+  Mac = 2,
+  Linux = 3
 }
 
 // ゲームから取得できるデータ
-const states = {
-  soluve: [1, 2, 3],
-  notSolved: [4, 5, 6],
-  typoCount: 2,
-  os: "Windows",
-};
 const Finish = () => {
-  const [shortcutsData, setShortcutsData] = useState([]) as any[];
   const location = useLocation();
-  try {
-    const { state } = location.state as State;
-    console.log(state);
-
-    // const { _soluve, notSolved, typoCount, os } = state;
-  } catch (error) {
-    console.log("ゲームから来てください");
-  }
-
-  const { soluve, notSolved, typoCount, os } = states;
+  const { solved, notSolved, typoCount, os } = location.state;
+  const [shortcutsData, setShortcutsData] = useState([]) as any[];
+  const [userId, _setUserId] = useRecoilState(userIdState);
+  console.log(location.state);
 
   const fetchData = async () => {
     try {
+      if (notSolved.current.length === 0) {
+        return;
+      }
       const response = await fetch(
-        `https://shortcutgame.kumaa9.dev/api/shortcutdetail/${notSolved.join(
+        `https://shortcutgame.kumaa9.dev/api/shortcutdetail/${notSolved.current.join(
           "/"
         )}/`
       );
@@ -56,6 +52,83 @@ const Finish = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const successFunc = async () => {
+    try {
+      console.log("正解問題送信開始");
+      console.log(
+        JSON.stringify({
+          f_user: userId,
+          f_os: OS[os],
+          shortcuts: solved.current,
+        })
+      );
+
+      const result = await fetch(
+        "https://shortcutgame.kumaa9.dev/api/success/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            f_user: userId,
+            f_os: OS[os],
+            shortcuts: solved.current,
+          }),
+        }
+      );
+      // ステータスコードが201の時に成功のメッセージを表示
+      if (result.status === 201) {
+        const data = await result.json();
+        console.log("正解問題送信成功");
+      }
+      // ステータスコード400の時に失敗のメッセージを表示
+      if (result.status === 400) {
+        console.log("通信に失敗しました");
+      }
+    } catch (error) {
+      console.log("通信に失敗しました");
+    }
+  };
+
+  useEffect(() => {
+    successFunc();
+  }, [solved]);
+
+  const rememberFunc = async () => {
+    try {
+      const result = await fetch(
+        "https://shortcutgame.kumaa9.dev/api/remember/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            f_user: userId,
+            f_os: OS[os],
+            shortcuts: notSolved.current,
+          }),
+        }
+      );
+      // ステータスコードが201の時に成功のメッセージを表示
+      if (result.status === 201) {
+        const data = await result.json();
+        console.log("ミス問題送信成功");
+      }
+      // ステータスコード400の時に失敗のメッセージを表示
+      if (result.status === 400) {
+        window.alert("通信に失敗しました");
+      }
+    } catch (error) {
+      window.alert("通信に失敗しました");
+    }
+  };
+
+  useEffect(() => {
+    rememberFunc();
+  }, [notSolved]);
 
   return (
     <>
@@ -122,15 +195,18 @@ const Finish = () => {
               <div className="absolute top-0 flex flex-col justify-center items-center w-[370px] h-[220px] p-5 mb-4 rounded-sm">
                 <div>
                   <p className="mb-3 text-lg font-bold text-center text-white">
-                    入力ミス：{typoCount}
+                    入力ミス：{typoCount.current}
                   </p>
-                  <p className="text-lg font-bold text-center text-white">正当数：{soluve.length}</p>
+                  <p className="text-lg font-bold text-center text-white">
+                    正当数：{solved.current.length}
+                  </p>
                 </div>
                 <div className="mt-8 flex justify-evenly w-full">
                   <div className="relative">
                     <OctagonFrame hovered={false} wid="120px" hei="40px" />
                     <Link
                       to="/game"
+                      state={{ cource: os }}
                       className="absolute top-0 flex justify-center items-center w-[120px] h-[40px] font-bold rounded-full text-white"
                     >
                       もう一度
@@ -155,7 +231,7 @@ const Finish = () => {
           <div className="absolute top-0 flex flex-col items-center justify-between w-[300px] h-full rounded-md overflow-hidden">
             <div>
               <h2 className="text-white p-5">
-                覚えてないショートカット {notSolved.length} / 10
+                覚えてないショートカット {notSolved.current.length} / 10
               </h2>
             </div>
             <div className="w-[90%] rounded-md mb-5 grow overflow-scroll scrollContainer">
