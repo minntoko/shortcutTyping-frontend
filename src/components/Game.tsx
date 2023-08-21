@@ -29,7 +29,8 @@ const Game = () => {
     };
   };
 
-  const [time, setTime] = useState<number>(15);
+  const countTimer = 10;
+  const [time, setTime] = useState<number>(countTimer + 5); // 最初のカウントダウン設定したい時間に5秒足す
   const [countDown, setCountDown] = useState<number>(3);
   const [answerKey, setAnswerKey] = useState<number>(-1);
 
@@ -76,7 +77,7 @@ const Game = () => {
       ) {
         console.log(answerKey + " Key is pressed!");
         correctCount.current.push(data.current?.[answerKey]?.shortcut_id); //正解したショートカットのIDを配列に追加
-        setTime(10); // タイマーをリセット
+        setTime(countTimer); // タイマーをリセット
         setAnswerKey(answerKey + 1); // answerKeyを変更
         if (answerKey == data.current?.length - 1) {
           console.log(correctCount.current);
@@ -146,7 +147,7 @@ const Game = () => {
       targets: ".timeBar",
       width: "100%",
       easing: "linear",
-      duration: 10000,
+      duration: (countTimer * 1000),
     });
 
     return () => {
@@ -159,7 +160,7 @@ const Game = () => {
   useEffect(() => {
     if (time == 0) {
       missCount.current.push(data.current?.[answerKey]?.shortcut_id ?? -1);
-      setTime(10);
+      setTime(countTimer);
       setAnswerKey(answerKey + 1);
       if (answerKey == data.current!.length - 1) {
         console.log(correctCount.current);
