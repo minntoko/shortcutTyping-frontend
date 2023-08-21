@@ -29,7 +29,7 @@ const Game = () => {
     };
   };
 
-  const countTimer = 10;
+  const countTimer = 7;
   const [time, setTime] = useState<number>(countTimer + 5); // 最初のカウントダウン設定したい時間に5秒足す
   const [countDown, setCountDown] = useState<number>(3);
   const [answerKey, setAnswerKey] = useState<number>(-1);
