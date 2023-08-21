@@ -1,14 +1,21 @@
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { loginState, loginToken } from "../state/atoms/userLoginAtom";
+import { loginState, loginToken, userIdState } from "../state/atoms/userLoginAtom";
 import BGDots from "./layouts/BGDots";
 import CornersFrame from "./layouts/CornersFrame";
 import OctagonFrame from "./layouts/OctagonFrame";
+import jwt_decode from "jwt-decode";
+
+interface Jwt {
+  random_string: string;
+  userid: string;
+}
 
 const Signup = () => {
   const setIsLgoin = useSetRecoilState(loginState);
   const [_token, setToken] = useRecoilState(loginToken);
+  const [_userId, setUserId] = useRecoilState(userIdState);
   const [emailValue, setEmailValue] = useState("");
   const [passValue, setPassValue] = useState("");
   const [passCheckValue, setPassCheckValue] = useState("");
@@ -35,6 +42,12 @@ const Signup = () => {
         setToken(data.token);
         setIsLgoin(true);
         navigate("/");
+        try {
+          const decoded: Jwt = jwt_decode(data.token);
+          setUserId(decoded.userid);
+        } catch (error) {
+          console.log("トークンがありません。");
+        }
         return;
       }
 

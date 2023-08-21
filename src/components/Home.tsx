@@ -87,7 +87,7 @@ const Home = () => {
         setLinuxShortcuts(linuxJsonData.shortcuts);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.log("データの取得に失敗しました。", error);
     }
   };
   
@@ -100,19 +100,21 @@ const Home = () => {
       const response = await fetch(
         `https://shortcutgame.kumaa9.dev/api/arrival/${userId}/`
       );
-      const jsonData = await response.json();
+      const arrivalData = await response.json();
       
-      setArrivalData(jsonData);
+      setArrivalData(arrivalData);
 
-      const platforms = Object.keys(jsonData.question);
+      const osNames = Object.keys(arrivalData.question);
       let totalArrival = 0;
-      let length = 0;
-      platforms.forEach((platform) => {
-        if(jsonData.arrival[platform] == null) return;
-        totalArrival += jsonData.arrival[platform];
-        length++;
+      osNames.forEach((osName) => {
+        if(arrivalData.arrival[osName] == null) return;
+        totalArrival += arrivalData.arrival[osName];
       });
-      setProgress(totalArrival / length);
+      if (totalArrival == 0) {
+        setProgress(0);
+        return;
+      };
+      setProgress(totalArrival / 3);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
