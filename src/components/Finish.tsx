@@ -181,7 +181,7 @@ const Finish = () => {
               <div className="absolute top-0 flex flex-col justify-center items-center w-[370px] h-[220px] p-5 mb-4 rounded-sm">
                 <div>
                   <p className="text-lg font-bold text-center text-white">
-                    正当数：{solved.current.length}
+                    正答数：{solved.current.length}
                   </p>
                   <p className="mt-3 text-lg font-bold text-center text-white">
                     入力ミス：{typoCount.current}
