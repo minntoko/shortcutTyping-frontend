@@ -7,7 +7,7 @@ import CornersFrame from "./layouts/CornersFrame";
 import LinesFrame from "./layouts/LinesFrame";
 import KranoxButton from "./buttons/KranoxButton";
 import OctagonFrame from "./layouts/OctagonFrame";
-import { userIdState } from "../state/atoms/userLoginAtom";
+import { loginState, userIdState } from "../state/atoms/userLoginAtom";
 import { useRecoilState } from "recoil";
 
 interface State {
@@ -23,13 +23,12 @@ enum OS {
   Linux = 3
 }
 
-// ゲームから取得できるデータ
 const Finish = () => {
   const location = useLocation();
   const { solved, notSolved, typoCount, os } = location.state;
+  const [isLogin, _setIsLogin] = useRecoilState(loginState);
   const [shortcutsData, setShortcutsData] = useState([]) as any[];
   const [userId, _setUserId] = useRecoilState(userIdState);
-  console.log(location.state);
 
   const fetchData = async () => {
     try {
@@ -43,7 +42,6 @@ const Finish = () => {
       );
       const jsonData = await response.json();
       setShortcutsData(jsonData);
-      console.log(jsonData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -55,15 +53,6 @@ const Finish = () => {
 
   const successFunc = async () => {
     try {
-      console.log("正解問題送信開始");
-      console.log(
-        JSON.stringify({
-          f_user: userId,
-          f_os: OS[os],
-          shortcuts: solved.current,
-        })
-      );
-
       const result = await fetch(
         "https://shortcutgame.kumaa9.dev/api/success/",
         {
@@ -81,7 +70,6 @@ const Finish = () => {
       // ステータスコードが201の時に成功のメッセージを表示
       if (result.status === 201) {
         const data = await result.json();
-        console.log("正解問題送信成功");
       }
       // ステータスコード400の時に失敗のメッセージを表示
       if (result.status === 400) {
@@ -91,10 +79,6 @@ const Finish = () => {
       console.log("通信に失敗しました");
     }
   };
-
-  useEffect(() => {
-    successFunc();
-  }, [solved]);
 
   const rememberFunc = async () => {
     try {
@@ -115,20 +99,22 @@ const Finish = () => {
       // ステータスコードが201の時に成功のメッセージを表示
       if (result.status === 201) {
         const data = await result.json();
-        console.log("ミス問題送信成功");
       }
       // ステータスコード400の時に失敗のメッセージを表示
       if (result.status === 400) {
-        window.alert("通信に失敗しました");
+        console.log("通信に失敗しました");
       }
     } catch (error) {
-      window.alert("通信に失敗しました");
+      console.log("通信に失敗しました");
     }
   };
 
   useEffect(() => {
-    rememberFunc();
-  }, [notSolved]);
+    isLogin && (
+      successFunc(),
+      rememberFunc()
+    )
+  }, [location.state]);
 
   return (
     <>
@@ -194,11 +180,11 @@ const Finish = () => {
               <KranoxButton wid="370px" hei="220px" />
               <div className="absolute top-0 flex flex-col justify-center items-center w-[370px] h-[220px] p-5 mb-4 rounded-sm">
                 <div>
-                  <p className="mb-3 text-lg font-bold text-center text-white">
-                    入力ミス：{typoCount.current}
-                  </p>
                   <p className="text-lg font-bold text-center text-white">
-                    正当数：{solved.current.length}
+                    正答数：{solved.current.length}
+                  </p>
+                  <p className="mt-3 text-lg font-bold text-center text-white">
+                    入力ミス：{typoCount.current}
                   </p>
                 </div>
                 <div className="mt-8 flex justify-evenly w-full">
