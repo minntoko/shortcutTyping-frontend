@@ -20,7 +20,7 @@ interface State {
 enum OS {
   Windows = 1,
   Mac = 2,
-  Linux = 3
+  Linux = 3,
 }
 
 const Finish = () => {
@@ -29,12 +29,11 @@ const Finish = () => {
   const [isLogin, _setIsLogin] = useRecoilState(loginState);
   const [shortcutsData, setShortcutsData] = useState([]) as any[];
   const [userId, _setUserId] = useRecoilState(userIdState);
+  const [rememberList, setRememberList] = useState([]) as any[];
 
   const fetchData = async () => {
+    if (notSolved.current.length === 0) return;
     try {
-      if (notSolved.current.length === 0) {
-        return;
-      }
       const response = await fetch(
         `https://shortcutgame.kumaa9.dev/api/shortcutdetail/${notSolved.current.join(
           "/"
@@ -47,11 +46,31 @@ const Finish = () => {
     }
   };
 
+  const fetchRemember = async () => {
+    try {
+      const response = await fetch(
+        `https://shortcutgame.kumaa9.dev/api/remember/${userId}/${OS[os]}/`
+      );
+      const jsonData = await response.json();
+      const filterNotsolved = jsonData.shortcuts
+        .map((item: { shortcut_id: number }) => item.shortcut_id)
+        .filter((item: number) => !solved.current.includes(item));
+      const newNotSolved = [
+        ...new Set([...notSolved.current, ...filterNotsolved]),
+      ];
+      setRememberList(newNotSolved);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   useEffect(() => {
+    fetchRemember();
     fetchData();
   }, []);
 
   const successFunc = async () => {
+    if (!isLogin || solved.length === 0) return;
     try {
       const result = await fetch(
         "https://shortcutgame.kumaa9.dev/api/success/",
@@ -81,6 +100,7 @@ const Finish = () => {
   };
 
   const rememberFunc = async () => {
+    if (!isLogin || rememberList.length === 0) return;
     try {
       const result = await fetch(
         "https://shortcutgame.kumaa9.dev/api/remember/",
@@ -92,7 +112,7 @@ const Finish = () => {
           body: JSON.stringify({
             f_user: userId,
             f_os: OS[os],
-            shortcuts: notSolved.current,
+            shortcuts: rememberList,
           }),
         }
       );
@@ -110,11 +130,12 @@ const Finish = () => {
   };
 
   useEffect(() => {
-    isLogin && (
-      successFunc(),
-      rememberFunc()
-    )
+    successFunc();
   }, [location.state]);
+
+  useEffect(() => {
+    rememberFunc();
+  }, [rememberList]);
 
   return (
     <>
