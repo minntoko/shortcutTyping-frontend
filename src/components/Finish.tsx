@@ -24,6 +24,7 @@ enum OS {
 }
 
 const Finish = () => {
+  const baseUrl = "http://127.0.0.1:8000/api/";
   const location = useLocation();
   const { solved, notSolved, typoCount, os } = location.state;
   const [isLogin, _setIsLogin] = useRecoilState(loginState);
@@ -35,7 +36,7 @@ const Finish = () => {
     if (notSolved.current.length === 0) return;
     try {
       const response = await fetch(
-        `https://shortcutgame.kumaa9.dev/api/shortcutdetail/${notSolved.current.join(
+        `${baseUrl}shortcutdetail/${notSolved.current.join(
           "/"
         )}/`
       );
@@ -49,7 +50,7 @@ const Finish = () => {
   const fetchRemember = async () => {
     try {
       const response = await fetch(
-        `https://shortcutgame.kumaa9.dev/api/remember/${userId}/${OS[os]}/`
+        `${baseUrl}remember/${userId}/${OS[os]}/`
       );
       const jsonData = await response.json();
       const filterNotsolved = jsonData.shortcuts
@@ -73,7 +74,7 @@ const Finish = () => {
     if (!isLogin || solved.length === 0) return;
     try {
       const result = await fetch(
-        "https://shortcutgame.kumaa9.dev/api/success/",
+        `${baseUrl}success/`,
         {
           method: "POST",
           headers: {
@@ -103,7 +104,7 @@ const Finish = () => {
     if (!isLogin || rememberList.length === 0) return;
     try {
       const result = await fetch(
-        "https://shortcutgame.kumaa9.dev/api/remember/",
+        `${baseUrl}remember/`,
         {
           method: "POST",
           headers: {

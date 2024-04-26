@@ -47,6 +47,7 @@ const defaultArrival = {
 };
 
 const Home = () => {
+  const baseUrl = "http://127.0.0.1:8000/api/";
   const [isLogin, setIsLogin] = useRecoilState(loginState);
   const [_token, setToken] = useRecoilState(loginToken);
   const [userId, setUserId] = useRecoilState(userIdState);
@@ -70,9 +71,9 @@ const Home = () => {
 
   const fetchRemember = async () => {
     try {
-      const macResponse = await fetch(`https://shortcutgame.kumaa9.dev/api/remember/${userId}/Mac/`);
-      const windowsResponse = await fetch(`https://shortcutgame.kumaa9.dev/api/remember/${userId}/Windows/`);
-      const linuxResponse = await fetch(`https://shortcutgame.kumaa9.dev/api/remember/${userId}/Linux/`);
+      const macResponse = await fetch(`${baseUrl}remember/${userId}/Mac/`);
+      const windowsResponse = await fetch(`${baseUrl}remember/${userId}/Windows/`);
+      const linuxResponse = await fetch(`${baseUrl}remember/${userId}/Linux/`);
       // ステータスコードが200番台のときに配列に追加
       if (macResponse.status === 200) {
         const macJsonData = await macResponse.json();
@@ -98,7 +99,7 @@ const Home = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `https://shortcutgame.kumaa9.dev/api/arrival/${userId}/`
+        `${baseUrl}arrival/${userId}/`
       );
       const arrivalData = await response.json();
       

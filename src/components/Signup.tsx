@@ -13,6 +13,7 @@ interface Jwt {
 }
 
 const Signup = () => {
+  const baseUrl = "http://127.0.0.1:8000/api/";
   const setIsLgoin = useSetRecoilState(loginState);
   const [_token, setToken] = useRecoilState(loginToken);
   const [_userId, setUserId] = useRecoilState(userIdState);
@@ -26,7 +27,7 @@ const Signup = () => {
       formParams.append("email", emailValue);
       formParams.append("password", passValue);
       const result = await fetch(
-        "https://shortcutgame.kumaa9.dev/api/login/",
+        `${baseUrl}login/`,
         {
           method: "POST",
           headers: {
@@ -63,7 +64,7 @@ const Signup = () => {
   };
   const signupFunc = async () => {
     try {
-      const result = await fetch("https://shortcutgame.kumaa9.dev/api/userregister/", {
+      const result = await fetch(`${baseUrl}userregister/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

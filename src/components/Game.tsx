@@ -10,6 +10,7 @@ import { loginState } from "../state/atoms/userLoginAtom";
 import { useRecoilState } from "recoil";
 
 const Game = () => {
+  const baseUrl = "http://127.0.0.1:8000/api/";
   //データ型
   type request = {
     shortcut_id: number;
@@ -50,14 +51,14 @@ const Game = () => {
   // データの取得
   useEffect(() => {
     if (isLogin[0] == false) {
-      fetch(`https://shortcutgame.kumaa9.dev/api/shortcut/${course}/`)
+      fetch(`${baseUrl}shortcut/${course}/`)
         .then((res) => res.json())
         .then((json) => {
           data.current = json;
           console.log(data);
         });
     } else {
-      fetch(`https://shortcutgame.kumaa9.dev/api/shortcut/${course}/`)
+      fetch(`${baseUrl}shortcut/${course}/`)
         .then((res) => res.json())
         .then((json) => {
           data.current = json;
